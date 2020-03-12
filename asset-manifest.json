@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/tunewise-web/static/css/main.5f361e03.chunk.css",
+    "main.js": "/tunewise-web/static/js/main.45807757.chunk.js",
+    "main.js.map": "/tunewise-web/static/js/main.45807757.chunk.js.map",
+    "runtime-main.js": "/tunewise-web/static/js/runtime-main.d2b958dd.js",
+    "runtime-main.js.map": "/tunewise-web/static/js/runtime-main.d2b958dd.js.map",
+    "static/js/2.8538215d.chunk.js": "/tunewise-web/static/js/2.8538215d.chunk.js",
+    "static/js/2.8538215d.chunk.js.map": "/tunewise-web/static/js/2.8538215d.chunk.js.map",
+    "index.html": "/tunewise-web/index.html",
+    "precache-manifest.f1498371d18d0894584ea2e332290797.js": "/tunewise-web/precache-manifest.f1498371d18d0894584ea2e332290797.js",
+    "service-worker.js": "/tunewise-web/service-worker.js",
+    "static/css/main.5f361e03.chunk.css.map": "/tunewise-web/static/css/main.5f361e03.chunk.css.map",
+    "static/js/2.8538215d.chunk.js.LICENSE.txt": "/tunewise-web/static/js/2.8538215d.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/tunewise-web/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d2b958dd.js",
+    "static/js/2.8538215d.chunk.js",
+    "static/css/main.5f361e03.chunk.css",
+    "static/js/main.45807757.chunk.js"
+  ]
+}
