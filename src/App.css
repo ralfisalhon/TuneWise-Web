@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+  background-color: #ecf0f1;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  min-width: 300px;
+}
+.wrapper .inner {
+  display: flex;
+  flex-direction: column;
+  height: 90%;
+  width: 50vh;
+  border-radius: 20px;
+  justify-content: center;
+  background-color: #001255;
+  align-items: center;
+}
+
+.wrapper .logoContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+.wrapper .image {
+  object-fit: contain;
+  width: 70%;
+  height: 'auto';
+}
+
+.text {
+  color: white;
+  font-family: 'Courier';
+  font-size: 18px;
+  margin-bottom: 30px;
+}
