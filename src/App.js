@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import s from './styles';
 import './App.css';
 import Clickable from './reusables/clickable';
+import ReactCodeInput from 'react-code-input';
 
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import logo from './assets/tunewise_logo.png';
 
@@ -23,6 +23,16 @@ const hash = window.location.hash
     }
     return initial;
   }, {});
+
+const inputStyle = {
+  width: '50px',
+  height: '50px',
+  marginLeft: '10px',
+  justifyContent: 'center',
+  alignItems: 'center',
+  textAlign: 'center',
+  borderRadius: '5px',
+};
 
 class App extends Component {
   constructor() {
@@ -48,28 +58,36 @@ class App extends Component {
         <Switch>
           <div className="wrapper">
             <div className={window.innerWidth > 500 ? 'inner' : 'innerMobile'}>
-              <p className="text">_____ get ur bop on _____</p>
-              <div className="logoContainer">
-                <img alt="logo" src={logo} className="image" />
-              </div>
               <Route path="/join_session">
-                <div className="container">
-                  <p className="text">4 digit room code?</p>
+                <div className="color_fill">
+                  <div className="container">
+                    <div className="logoContainer">
+                      <img alt="logo" src={logo} className="image small" />
+                    </div>
+                    <p className="text">4 digit room code?</p>
+                    <ReactCodeInput type="number" fields={4} inputStyle={inputStyle} />
+                    <div style={{ height: '30px' }} />
+                    <Clickable filled color="white" text={'join room'} onClick={() => alert('joining')} />
+                    <div style={{ height: '15px' }} />
+                    <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
+                    <div style={{ height: '20vh' }} />
+                  </div>
                 </div>
-              </Route>
-              <Route path="/test">
-                <p>LOL 2</p>
               </Route>
               <Route path="/">
                 {window.location.pathname === '/' && (
                   <div className="container">
+                    <p className="text">_____ get ur bop on _____</p>
+                    <div className="logoContainer">
+                      <img alt="logo" src={logo} className="image" />
+                    </div>
                     <Clickable
-                      filled
                       text={'create session.'}
+                      filled
                       color="white"
                       onClick={() =>
                         loggedIn
-                          ? alert('Lol')
+                          ? alert('Already logged in w token: ' + this.state.token)
                           : (window.location.href = `${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
                               '%20'
                             )}&response_type=token&show_dialog=true`)
