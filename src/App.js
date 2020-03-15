@@ -7,8 +7,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import logo from './assets/tunewise_logo.png';
 
-export const authEndpoint = 'https://accounts.spotify.com/authorize?';
+const isMobile = window.innerWidth <= 500;
 
+const authEndpoint = 'https://accounts.spotify.com/authorize?';
 const clientId = '895eddbce28a406e92d83b3ca8451560';
 const redirectUri = 'http://localhost:3000';
 const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
@@ -32,6 +33,8 @@ const inputStyle = {
   alignItems: 'center',
   textAlign: 'center',
   borderRadius: '5px',
+  fontSize: '22px',
+  fontWeight: '800',
 };
 
 class App extends Component {
@@ -40,6 +43,7 @@ class App extends Component {
 
     this.state = {
       token: null,
+      code: null,
     };
   }
   componentDidMount() {
@@ -57,7 +61,7 @@ class App extends Component {
       <Router>
         <Switch>
           <div className="wrapper">
-            <div className={window.innerWidth > 500 ? 'inner' : 'innerMobile'}>
+            <div className={isMobile ? 'innerMobile' : 'inner'}>
               <Route path="/join_session">
                 <div className="color_fill">
                   <div className="container">
@@ -65,12 +69,26 @@ class App extends Component {
                       <img alt="logo" src={logo} className="image small" />
                     </div>
                     <p className="text">4 digit room code?</p>
-                    <ReactCodeInput type="number" fields={4} inputStyle={inputStyle} />
+                    <ReactCodeInput
+                      type="number"
+                      fields={4}
+                      inputStyle={inputStyle}
+                      onChange={(code) => this.setState({ code })}
+                    />
                     <div style={{ height: '30px' }} />
-                    <Clickable filled color="white" text={'join room'} onClick={() => alert('joining')} />
+                    <Clickable
+                      filled
+                      color="white"
+                      text={'join room'}
+                      onClick={() =>
+                        !this.state.code || this.state.code.length < 4
+                          ? alert('Enter the 4 digit code')
+                          : alert('joining with code ' + this.state.code)
+                      }
+                    />
                     <div style={{ height: '15px' }} />
                     <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
-                    <div style={{ height: '20vh' }} />
+                    <div style={{ height: isMobile ? '20vh' : '10vh' }} />
                   </div>
                 </div>
               </Route>
