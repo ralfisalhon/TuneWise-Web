@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import s from './styles';
 import './App.css';
 import Clickable from './reusables/clickable';
@@ -22,31 +22,51 @@ const hash = window.location.hash
     return initial;
   }, {});
 
-window.location.hash = '';
+class App extends Component {
+  constructor() {
+    super();
 
-function App() {
-  return (
-    <div className="wrapper">
-      <div className={window.innerWidth > 500 ? 'inner' : 'innerMobile'}>
-        <p className="text">_____ get ur bop on _____</p>
-        <div className="logoContainer">
-          <img alt="logo" src={logo} className="image" />
+    this.state = {
+      token: null,
+    };
+  }
+  componentDidMount() {
+    let _token = hash.access_token;
+    if (_token) {
+      this.setState({
+        token: _token,
+      });
+    }
+  }
+
+  render() {
+    const loggedIn = this.state.token != null;
+    return (
+      <div className="wrapper">
+        <div className={window.innerWidth > 500 ? 'inner' : 'innerMobile'}>
+          <p className="text">_____ get ur bop on _____</p>
+          <div className="logoContainer">
+            <img alt="logo" src={logo} className="image" />
+          </div>
+          <Clickable
+            filled
+            text={'create session.'}
+            color="white"
+            onClick={() =>
+              loggedIn
+                ? alert('Lol')
+                : (window.location.href = `${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+                    '%20'
+                  )}&response_type=token&show_dialog=true`)
+            }
+          />
+          <p className="text">_____ or _____</p>
+          <div style={{ height: '10px' }} />
+          <Clickable text={'join existing.'} onClick={() => alert('join existing button')} />
         </div>
-        <Clickable filled text={'create session.'} color="white" onClick={() => alert('Create Session')} />
-        <p className="text">_____ or _____</p>
-        <div style={{ height: '10px' }} />
-        <Clickable text={'join existing.'} onClick={() => alert('Join Existing')} />
-        <a
-          className="btn btn--loginApp-link"
-          href={`${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-            '%20'
-          )}&response_type=token&show_dialog=true`}
-        >
-          Login to Spotify
-        </a>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default App;
