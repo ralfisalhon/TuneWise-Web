@@ -3,6 +3,8 @@ import s from './styles';
 import './App.css';
 import Clickable from './reusables/clickable';
 
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+
 import logo from './assets/tunewise_logo.png';
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize?';
@@ -42,29 +44,47 @@ class App extends Component {
   render() {
     const loggedIn = this.state.token != null;
     return (
-      <div className="wrapper">
-        <div className={window.innerWidth > 500 ? 'inner' : 'innerMobile'}>
-          <p className="text">_____ get ur bop on _____</p>
-          <div className="logoContainer">
-            <img alt="logo" src={logo} className="image" />
+      <Router>
+        <Switch>
+          <div className="wrapper">
+            <div className={window.innerWidth > 500 ? 'inner' : 'innerMobile'}>
+              <p className="text">_____ get ur bop on _____</p>
+              <div className="logoContainer">
+                <img alt="logo" src={logo} className="image" />
+              </div>
+              <Route path="/join_session">
+                <div className="container">
+                  <p className="text">4 digit room code?</p>
+                </div>
+              </Route>
+              <Route path="/test">
+                <p>LOL 2</p>
+              </Route>
+              <Route path="/">
+                {window.location.pathname === '/' && (
+                  <div className="container">
+                    <Clickable
+                      filled
+                      text={'create session.'}
+                      color="white"
+                      onClick={() =>
+                        loggedIn
+                          ? alert('Lol')
+                          : (window.location.href = `${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+                              '%20'
+                            )}&response_type=token&show_dialog=true`)
+                      }
+                    />
+                    <p className="text">_____ or _____</p>
+                    <div style={{ height: '10px' }} />
+                    <Clickable text={'join existing.'} onClick={() => (window.location.href = '/join_session')} />
+                  </div>
+                )}
+              </Route>
+            </div>
           </div>
-          <Clickable
-            filled
-            text={'create session.'}
-            color="white"
-            onClick={() =>
-              loggedIn
-                ? alert('Lol')
-                : (window.location.href = `${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-                    '%20'
-                  )}&response_type=token&show_dialog=true`)
-            }
-          />
-          <p className="text">_____ or _____</p>
-          <div style={{ height: '10px' }} />
-          <Clickable text={'join existing.'} onClick={() => alert('join existing button')} />
-        </div>
-      </div>
+        </Switch>
+      </Router>
     );
   }
 }

@@ -6,6 +6,14 @@
   align-items: center;
   min-width: 300px;
 }
+
+.wrapper .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 180px;
+}
+
 .wrapper .inner {
   display: flex;
   flex-direction: column;
