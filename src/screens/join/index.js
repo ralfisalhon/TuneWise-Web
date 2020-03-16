@@ -19,7 +19,7 @@ const inputStyle = {
   fontWeight: '800',
 };
 
-class JoinSession extends Component {
+class JoinPage extends Component {
   constructor() {
     super();
     this.state = {
@@ -61,4 +61,4 @@ class JoinSession extends Component {
   }
 }
 
-export default JoinSession;
+export default JoinPage;

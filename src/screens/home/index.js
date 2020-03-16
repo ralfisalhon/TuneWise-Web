@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Clickable from '../../reusables/clickable';
 import './styles.css';
-
 import logo from '../../assets/tunewise_logo.png';
 
 const authEndpoint = 'https://accounts.spotify.com/authorize?';
@@ -19,55 +18,39 @@ const hash = window.location.hash
     return initial;
   }, {});
 
-class Home extends Component {
-  constructor() {
-    super();
-    this.state = {
-      token: null,
-    };
+class HomePage extends Component {
+  componentDidMount() {
+    this.getToken();
   }
 
-  componentDidMount() {
+  getToken = async () => {
     let _token = hash.access_token;
     if (_token) {
-      this.setState(
-        {
-          token: _token,
-        },
-        () => {
-          // go to create_session
-          window.location.href = '/';
-        }
-      );
+      await this.props.setToken(_token);
+      window.location.href = '/create';
     }
-  }
+  };
+
+  authorize = () => {
+    window.location.href = `${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+      '%20'
+    )}&response_type=token&show_dialog=true`;
+  };
 
   render() {
-    const loggedIn = this.state.token != null;
     return (
       <div className="container">
         <p className="text">_____ get ur bop on _____</p>
         <div className="logoContainer">
           <img alt="logo" src={logo} className="image" />
         </div>
-        <Clickable
-          text={'create session.'}
-          filled
-          color="white"
-          onClick={() =>
-            loggedIn
-              ? alert('Already logged in w token: ' + this.state.token)
-              : (window.location.href = `${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-                  '%20'
-                )}&response_type=token&show_dialog=true`)
-          }
-        />
+        <Clickable text={'create session.'} filled color="white" onClick={() => this.authorize()} />
         <p className="text">_____ or _____</p>
         <div style={{ height: '10px' }} />
-        <Clickable text={'join existing.'} onClick={() => (window.location.href = '/join_session')} />
+        <Clickable text={'join existing.'} onClick={() => (window.location.href = '/join')} />
       </div>
     );
   }
 }
 
-export default Home;
+export default HomePage;

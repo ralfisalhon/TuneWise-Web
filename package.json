@@ -1,6 +1,5 @@
 {
   "name": "tunewise-web",
-  "homepage": "http://ralfisalhon.github.io/tunewise-web",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
