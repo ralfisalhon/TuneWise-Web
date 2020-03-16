@@ -6,13 +6,6 @@
   align-items: center;
   min-width: 300px;
 }
-
-.wrapper .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .wrapper .inner {
   display: flex;
   flex-direction: column;
@@ -24,7 +17,6 @@
   align-items: center;
   overflow: hidden;
 }
-
 .wrapper .innerMobile {
   display: flex;
   flex-direction: column;
@@ -35,33 +27,12 @@
   align-items: center;
   overflow: hidden;
 }
-
-.wrapper .logoContainer {
-  display: flex;
-  justify-content: center;
-  margin-top: 30px;
-  margin-bottom: 40px;
-}
-
-.wrapper .image {
-  object-fit: contain;
-  width: 70%;
-  height: 'auto';
-}
-
 .small {
   max-width: 30vh;
   margin-bottom: -30px;
 }
-
 .text {
   color: white;
   font-family: 'Courier';
   font-size: 18px;
-}
-
-.color_fill {
-  width: 100vw;
-  height: 'auto';
-  flex-direction: column;
 }
