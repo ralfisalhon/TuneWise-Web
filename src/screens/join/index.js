@@ -15,7 +15,7 @@ const inputStyle = {
   alignItems: 'center',
   textAlign: 'center',
   borderRadius: '5px',
-  fontSize: '22px',
+  fontSize: '24px',
   fontWeight: '800',
 };
 

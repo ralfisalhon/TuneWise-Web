@@ -19,6 +19,8 @@ const inputStyle = {
   fontWeight: '800',
 };
 
+const baseURI = 'https://tunewise.herokuapp.com';
+
 class CreatePage extends Component {
   constructor(props) {
     super(props);
@@ -27,34 +29,35 @@ class CreatePage extends Component {
     };
   }
 
+  bookRoom = async (accessToken) => {
+    console.log('Making fetch request with token ' + accessToken);
+    fetch(baseURI + '/bookroom', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify({
+        token: accessToken,
+      }),
+    })
+      .then((response) => console.log(response.json()))
+      .catch((error) => console.log('ERROR!!! -> ' + error));
+  };
+
+  componentDidMount() {
+    this.bookRoom(this.state.apiToken);
+  }
+
   render() {
-    console.log('api token is ' + this.props.apiToken);
     return (
       <div className="color_fill">
         <div className="container">
           <div className="logoContainer">
             <img alt="logo" src={logo} className="image small" />
           </div>
-          <p className="text">session name:</p>
-          <p className="text">token is: {this.state.apiToken}</p>
-          <ReactCodeInput
-            type="number"
-            fields={4}
-            inputStyle={inputStyle}
-            onChange={(code) => this.setState({ code })}
-          />
-          <div style={{ height: '30px' }} />
-          <Clickable
-            filled
-            color="white"
-            text={'create session'}
-            onClick={() =>
-              this.state.code == null || this.state.code.length < 4
-                ? alert('Enter the 4 digit code')
-                : alert('joining with code ' + this.state.code)
-            }
-          />
-          <div style={{ height: '15px' }} />
+          <p className="text">token:</p>
+          <p className="text">{this.state.apiToken}</p>
+
           <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
           <div style={{ height: isMobile ? '20vh' : '10vh' }} />
         </div>

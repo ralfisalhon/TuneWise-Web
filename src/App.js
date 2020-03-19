@@ -20,7 +20,6 @@ class App extends Component {
     this.setState({ apiToken: token }, () => {
       console.log('set apiToken as', token);
       sessionStorage.setItem('apiToken', token);
-      return true;
     });
   };
 
