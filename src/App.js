@@ -3,6 +3,7 @@ import './App.css';
 import JoinPage from './screens/join';
 import CreatePage from './screens/create';
 import HomePage from './screens/home';
+import InfoPage from './screens/info';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
@@ -35,6 +36,9 @@ class App extends Component {
               </Route>
               <Route path="/join">
                 <JoinPage />
+              </Route>
+              <Route path="/info">
+                <InfoPage />
               </Route>
               <Route path="/">
                 {window.location.pathname === '/' && <HomePage setToken={(token) => this.setToken(token)} />}

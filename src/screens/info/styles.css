@@ -1,12 +1,8 @@
 .small {
   max-width: 38vh;
-  margin-bottom: -35px;
+  margin-bottom: -10px;
 }
-.color_fill {
-  width: 100vw;
-  height: 'auto';
-  flex-direction: column;
-}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -18,4 +14,9 @@
   justify-content: center;
   margin-top: 30px;
   margin-bottom: 40px;
+}
+
+.text {
+  text-align: center;
+  font-size: medium;
 }
