@@ -13,22 +13,27 @@ class CreatePage extends Component {
     super(props);
     this.state = {
       apiToken: this.props.apiToken,
+      code: null,
     };
   }
 
   bookRoom = async (accessToken) => {
-    console.log('Making fetch request with token ' + accessToken);
-    fetch(baseURI + '/bookroom', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify({
-        token: accessToken,
-      }),
-    })
-      .then((response) => console.log(response.json()))
-      .catch((error) => console.log('ERROR!!! -> ' + error));
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = (e) => {
+      if (xhr.readyState !== 4) {
+        return;
+      }
+      if (xhr.status === 200) {
+        let data = xhr.responseText;
+        let obj = JSON.parse(data.replace(/\r?\n|\r/g, ''));
+        this.setState({ code: obj.code });
+      } else {
+        alert('No server response');
+      }
+    };
+    xhr.open('POST', baseURI + '/bookroom');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('token=' + accessToken);
   };
 
   componentDidMount() {
@@ -42,8 +47,8 @@ class CreatePage extends Component {
           <div className="logoContainer">
             <img alt="logo" src={logo} className="image small" />
           </div>
-          <p className="text">token:</p>
-          <p className="text">{this.state.apiToken}</p>
+          <p className="text">Your friends can join with the following code:</p>
+          <p className="text code">{this.state.code}</p>
 
           <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
           <div style={{ height: isMobile ? '20vh' : '10vh' }} />

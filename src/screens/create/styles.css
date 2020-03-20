@@ -1,3 +1,11 @@
+.code {
+  font-size: 32px !important;
+  letter-spacing: 1.2em;
+  margin-right: -1.2em;
+  text-align: center;
+  margin-top: 10px;
+}
+
 .small {
   max-width: 38vh;
   margin-bottom: -35px;

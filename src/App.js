@@ -25,7 +25,6 @@ class App extends Component {
   };
 
   render() {
-    console.log('App.js, apiToken is ' + this.state.apiToken);
     return (
       <Router>
         <Switch>

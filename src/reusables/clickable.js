@@ -15,12 +15,12 @@ class Clickable extends Component {
     };
   };
 
-  getTextStyle = (filled, color) => {
+  getTextStyle = (filled) => {
     return {
       color: filled ? '#001255' : 'white',
-      fontWeight: '500',
+      fontWeight: 'bold',
       outline: 'none',
-      fontFamily: 'Courier',
+      fontFamily: 'Courier New',
       fontSize: '22px',
     };
   };
@@ -35,7 +35,7 @@ class Clickable extends Component {
         onClick={onClick}
         style={this.getButtonStyle(filled, color)}
       >
-        <span style={this.getTextStyle(filled, color)}>{text}</span>
+        <span style={this.getTextStyle(filled)}>{text}</span>
       </span>
     );
   }
