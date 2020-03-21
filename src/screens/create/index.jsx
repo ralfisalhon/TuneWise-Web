@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Clickable from '../../reusables/clickable';
+import Clickable from '../../reusables/Clickable';
 import './styles.css';
 
 import logo from '../../assets/tunewise_logo.png';
@@ -28,7 +28,7 @@ class CreatePage extends Component {
         let obj = JSON.parse(data.replace(/\r?\n|\r/g, ''));
         this.setState({ code: obj.code });
       } else {
-        alert('No server response');
+        this.setState({ code: 'ERROR' });
       }
     };
     xhr.open('POST', baseURI + '/bookroom');
@@ -37,7 +37,9 @@ class CreatePage extends Component {
   };
 
   componentDidMount() {
-    this.bookRoom(this.state.apiToken);
+    if (this.state.apiToken && !this.state.code) {
+      this.bookRoom(this.state.apiToken);
+    }
   }
 
   render() {

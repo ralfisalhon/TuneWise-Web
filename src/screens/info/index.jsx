@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Clickable from '../../reusables/clickable';
+import Clickable from '../../reusables/Clickable';
 import './styles.css';
 
 import logo from '../../assets/tunewise_logo.png';
