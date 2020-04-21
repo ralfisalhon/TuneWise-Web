@@ -1,3 +1,7 @@
+.container {
+  padding: 20px;
+}
+
 .code {
   font-size: 32px !important;
   letter-spacing: 1.2em;
