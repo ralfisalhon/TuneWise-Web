@@ -6,7 +6,7 @@ original idea by San Akdag, Nihal Pai, Mohsin Rizvi, Ralfi Salhon from Tufts Pol
 
 ```sh
 $ git clone https://github.com/ralfisalhon/ralfi.dev.git
-$ cd ralfi.dev
+$ cd tunewise-web
 $ npm install
 $ npm start
 ```
