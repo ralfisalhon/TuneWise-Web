@@ -26,6 +26,10 @@ class CreatePage extends Component {
       if (xhr.status === 200) {
         let data = xhr.responseText;
         let obj = JSON.parse(data.replace(/\r?\n|\r/g, ''));
+        if (obj.code.length > 4) {
+          this.setState({ code: 'ERROR' });
+          return;
+        }
         this.setState({ code: obj.code });
       } else {
         this.setState({ code: 'ERROR' });
@@ -43,14 +47,19 @@ class CreatePage extends Component {
   }
 
   render() {
+    const { code } = this.state;
     return (
       <div className="color_fill">
         <div className="container">
           <div className="logoContainer">
             <img alt="logo" src={logo} className="image small" />
           </div>
-          <p className="text">Your friends can join with the following code:</p>
-          <p className="text code">{this.state.code}</p>
+          <p className="text">
+            your friends can join
+            <br />
+            with the following code:
+          </p>
+          {code && code.length > 0 ? <p className="text code">{code}</p> : <p className="text">creating session...</p>}
 
           <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
           <div style={{ height: isMobile ? '20vh' : '10vh' }} />

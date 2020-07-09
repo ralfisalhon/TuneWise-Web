@@ -6,11 +6,15 @@ import logo from '../../assets/tunewise_logo.png';
 const authEndpoint = 'https://accounts.spotify.com/authorize?';
 const clientId = '895eddbce28a406e92d83b3ca8451560';
 const redirectUri = 'http://localhost:3000';
-const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
+const scopes = [
+  // 'user-read-currently-playing',
+  // 'user-read-playback-state',
+  'user-modify-playback-state',
+];
 const hash = window.location.hash
   .substring(1)
   .split('&')
-  .reduce(function(initial, item) {
+  .reduce(function (initial, item) {
     if (item) {
       var parts = item.split('=');
       initial[parts[0]] = decodeURIComponent(parts[1]);

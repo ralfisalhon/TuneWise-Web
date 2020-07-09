@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Clickable from '../../reusables/Clickable';
+import { TextInput } from '../../reusables/TextInput';
 import ReactCodeInput from 'react-code-input';
 import './styles.css';
 
@@ -73,6 +74,8 @@ class JoinPage extends Component {
             inputStyle={inputStyle}
             onChange={(code) => this.setState({ code, error: '' })}
           />
+          <p className="text">your name?</p>
+          <TextInput />
           {this.state.error && <p style={{ color: 'tomato' }}>{this.state.error}</p>}
           <div style={{ height: '30px' }} />
           <Clickable
