@@ -28,22 +28,24 @@ class App extends Component {
     return (
       <Router>
         <Switch>
-          <div className="wrapper">
-            <div className={isMobile ? 'innerMobile' : 'inner'}>
-              <Route path="/create">
-                <CreatePage apiToken={this.state.apiToken} />
-              </Route>
-              <Route path="/join">
-                <JoinPage />
-              </Route>
-              <Route path="/info">
-                <InfoPage />
-              </Route>
-              <Route path="/">
-                {window.location.pathname === '/' && <HomePage setToken={(token) => this.setToken(token)} />}
-              </Route>
+          <React.Fragment>
+            <div className="wrapper">
+              <div className={isMobile ? 'innerMobile' : 'inner'}>
+                <Route path="/create">
+                  <CreatePage apiToken={this.state.apiToken} />
+                </Route>
+                <Route path="/join">
+                  <JoinPage />
+                </Route>
+                <Route path="/info">
+                  <InfoPage />
+                </Route>
+                <Route path="/">
+                  {window.location.pathname === '/' && <HomePage setToken={(token) => this.setToken(token)} />}
+                </Route>
+              </div>
             </div>
-          </div>
+          </React.Fragment>
         </Switch>
       </Router>
     );
