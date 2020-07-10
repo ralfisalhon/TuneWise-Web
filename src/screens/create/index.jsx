@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Clickable from '../../reusables/Clickable';
+import { TextInput } from '../../reusables/TextInput';
 import './styles.css';
 
 import logo from '../../assets/tunewise_logo.png';
@@ -46,19 +47,36 @@ class CreatePage extends Component {
     }
   }
 
+  startSession() {
+    alert('boop');
+  }
+
   render() {
     const { code } = this.state;
     return (
       <div className="color_fill">
         <div className="container">
-          <div className="logoContainer">
+          <div className="logoContainer-create">
             <img alt="logo" src={logo} className="image small" />
           </div>
           <div className="textContainer">
             <p className="text">your friends can join with the following code:</p>
           </div>
 
-          {code && code.length > 0 ? <p className="text code">{code}</p> : <p className="text">creating session...</p>}
+          {code && code.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <p className="text code">{code}</p>
+              <p className="text" style={{ marginTop: '-5px' }}>
+                your name?
+              </p>
+              <TextInput onChange={(name) => this.setState({ name, error: '' })} />
+              <div style={{ marginBottom: '30px' }} />
+              <Clickable text={'start session.'} filled color="white" onClick={() => this.startSession()} />
+              <div style={{ marginBottom: '20px' }} />
+            </div>
+          ) : (
+            <p className="text">creating session...</p>
+          )}
 
           <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
           <div style={{ height: isMobile ? '20vh' : '10vh' }} />

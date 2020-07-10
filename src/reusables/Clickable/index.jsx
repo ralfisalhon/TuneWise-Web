@@ -12,6 +12,7 @@ class Clickable extends Component {
       outline: 'none',
       backgroundColor: filled ? color : 'none',
       cursor: 'pointer',
+      textAlign: 'center',
     };
   };
 
