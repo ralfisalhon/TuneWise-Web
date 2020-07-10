@@ -54,11 +54,10 @@ class CreatePage extends Component {
           <div className="logoContainer">
             <img alt="logo" src={logo} className="image small" />
           </div>
-          <p className="text">
-            your friends can join
-            <br />
-            with the following code:
-          </p>
+          <div className="textContainer">
+            <p className="text">your friends can join with the following code:</p>
+          </div>
+
           {code && code.length > 0 ? <p className="text code">{code}</p> : <p className="text">creating session...</p>}
 
           <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />

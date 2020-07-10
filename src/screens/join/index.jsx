@@ -27,6 +27,7 @@ class JoinPage extends Component {
     this.state = {
       code: null,
       error: '',
+      name: '',
     };
   }
 
@@ -65,7 +66,7 @@ class JoinPage extends Component {
       <div className="color_fill">
         <div className="container">
           <div className="logoContainer">
-            <img alt="logo" src={logo} className="image small" />
+            <img alt="logo" src={logo} className="image small-logo" />
           </div>
           <p className="text">4 digit room code?</p>
           <ReactCodeInput
@@ -74,8 +75,9 @@ class JoinPage extends Component {
             inputStyle={inputStyle}
             onChange={(code) => this.setState({ code, error: '' })}
           />
+          <div style={{ height: '10px' }} />
           <p className="text">your name?</p>
-          <TextInput />
+          <TextInput onChange={(name) => this.setState({ name })} />
           {this.state.error && <p style={{ color: 'tomato' }}>{this.state.error}</p>}
           <div style={{ height: '30px' }} />
           <Clickable
@@ -85,7 +87,9 @@ class JoinPage extends Component {
             onClick={() =>
               this.state.code == null || this.state.code.length < 4
                 ? this.setState({ error: 'incomplete room code' })
-                : this.joinRoom(this.state.code, 'Ralfi')
+                : this.state.name.length < 1
+                ? this.setState({ error: 'please enter your name' })
+                : this.joinRoom(this.state.code, this.state.name)
             }
           />
           <div style={{ height: '15px' }} />

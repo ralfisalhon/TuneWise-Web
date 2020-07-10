@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './styles.css';
 
-export const TextInput = () => {
-  const [name, setName] = useState('');
-  return <input value={name} onChange={(e) => setName(e.target.value)} />;
+export const TextInput = ({ placeholder, onChange }) => {
+  return (
+    <input className="input" placeholder={placeholder} maxLength={20} onChange={(e) => onChange(e.target.value)} />
+  );
 };

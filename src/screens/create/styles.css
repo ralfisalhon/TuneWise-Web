@@ -1,6 +1,9 @@
 .container {
   padding: 20px;
-  word-wrap: break-word;
+}
+
+.textContainer {
+  max-width: 45vh;
 }
 
 .code {
