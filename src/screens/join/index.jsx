@@ -31,19 +31,64 @@ class JoinPage extends Component {
     };
   }
 
-  handleJoinResponse = (content) => {
-    console.log(content);
+  searchSong = async (accessToken, query) => {
+    if (query.length === 0) this.setState({ searchResults: [] });
+    if (query.length < 3) return;
+    query = query.split(' ').join('+');
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = async (e) => {
+      if (xhr.readyState !== 4) return;
+      if (xhr.status === 200) {
+        let data = xhr.responseText;
+        let obj = JSON.parse(data);
+        let temp = obj.tracks.items;
 
-    let res = 'HI';
+        // remove all songs without preview_url
+
+        this.setState({ searchResults: temp });
+        console.log('RALFIII');
+        console.log(obj.tracks.items);
+      } else if (xhr.status === 401) {
+        alert('Your token expired');
+      } else console.warn('Something went wrong on searchSong');
+    };
+    xhr.open('GET', 'https://api.spotify.com/v1/search?type=track&limit=10&q=' + query);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send();
+  };
+
+  makePlayRequest = (token) => {
+    console.log('my token is', token);
+    const baseURI = 'https://api.spotify.com/v1';
+    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    const url = baseURI + '/me/player/play';
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ uris: ['spotify:track:48wH8bAxvBJO2l14GmNLz7'] }), // wait for the moment
+    })
+      .then((response) => response.text())
+      .then((content) => content.json())
+      .then((json) => console.log(json))
+      .catch(() => console.log('Can’t access ' + url + ' response. Blocked by browser?'));
+  };
+
+  handleJoinResponse = (content) => {
+    let res;
     try {
       res = JSON.parse(content);
     } catch {
-      this.setState({ error: content.toLowerCase() });
-      return;
+      return this.setState({ error: content.toLowerCase() });
     }
 
-    //   let obj = text.json();
-    console.log('res is', res);
+    const { id, token } = res;
+    this.makePlayRequest(token);
   };
 
   joinRoom = (code, name) => {
@@ -77,8 +122,8 @@ class JoinPage extends Component {
           />
           <div style={{ height: '10px' }} />
           <p className="text">your name?</p>
-          <TextInput onChange={(name) => this.setState({ name })} />
-          {this.state.error && <p style={{ color: 'tomato' }}>{this.state.error}</p>}
+          <TextInput onChange={(name) => this.setState({ name, error: '' })} />
+          {this.state.error && <p style={{ color: 'tomato', marginBottom: '-10px' }}>{this.state.error}</p>}
           <div style={{ height: '30px' }} />
           <Clickable
             filled
@@ -94,7 +139,7 @@ class JoinPage extends Component {
           />
           <div style={{ height: '15px' }} />
           <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
-          <div style={{ height: isMobile ? '20vh' : '10vh' }} />
+          <div style={{ height: isMobile ? '15vh' : '5vh' }} />
         </div>
       </div>
     );
