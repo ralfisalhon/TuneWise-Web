@@ -7,18 +7,19 @@ import './styles.css';
 import logo from '../../assets/tunewise_logo.png';
 
 const isMobile = window.innerWidth <= 500;
+const isTall = window.innerHeight > 650;
+
 const baseURI = 'http://tunewise.herokuapp.com';
 
 const inputStyle = {
-  width: '50px',
-  height: '50px',
-  marginLeft: '10px',
-  justifyContent: 'center',
-  alignItems: 'center',
+  maxWidth: '20px',
+  maxHeight: '20px',
+  marginLeft: '5px',
+  marginRight: '5px',
   textAlign: 'center',
-  borderRadius: '5px',
   fontSize: '24px',
   fontWeight: '800',
+  padding: '10px',
 };
 
 class JoinPage extends Component {
@@ -62,7 +63,6 @@ class JoinPage extends Component {
   makePlayRequest = (token) => {
     console.log('my token is', token);
     const baseURI = 'https://api.spotify.com/v1';
-    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
     const url = baseURI + '/me/player/play';
     fetch(url, {
       method: 'PUT',
@@ -110,9 +110,12 @@ class JoinPage extends Component {
     return (
       <div className="color_fill">
         <div className="container">
-          <div className="logoContainer">
-            <img alt="logo" src={logo} className="image small-logo" />
-          </div>
+          {!isMobile ||
+            (isTall && (
+              <div className="logoContainer-join">
+                <img alt="logo" src={logo} className="image small-logo" />
+              </div>
+            ))}
           <p className="text">4 digit room code?</p>
           <ReactCodeInput
             type="number"

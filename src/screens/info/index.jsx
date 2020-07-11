@@ -4,19 +4,29 @@ import './styles.css';
 
 import logo from '../../assets/tunewise_logo.png';
 
+const isMobile = window.innerWidth <= 500;
+
 class InfoPage extends Component {
   render() {
     return (
       <div>
         <div className="container">
-          <div className="logoContainer">
-            <img alt="logo" src={logo} className="image small" />
-          </div>
-          <p className="text">my name is ralfi</p>
-          <p className="text">TuneWise does this cool thing {'<explain the cool thing/>'}</p>
-          <p className="text">we originally did it at tufts polyhack 2019. shoutout to mohsin, nihal, san</p>
-          <p className="text">my website is ralfi.dev</p>
-          <p className="text">peace</p>
+          {!isMobile && (
+            <div className="logoContainer-info">
+              <img alt="logo" src={logo} className="image small" />
+            </div>
+          )}
+          <p className="text">tunewise is a music centered party game.</p>
+          <p className="text">one user's spotify account is used to play the music.</p>
+          <p className="text">
+            other players try to guess the songs being played. if they do, they win a point and play the next song.
+          </p>
+          <p className="text">
+            we originally built tunewise as a mobile app at tufts polyhack 2019. shoutout to mohsin, nihal, san!
+          </p>
+          <p className="text">
+            check out my other projects at <a href="https://ralfi.dev">ralfi.dev</a>
+          </p>
           <br />
 
           <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />

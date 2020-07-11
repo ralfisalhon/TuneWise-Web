@@ -18,28 +18,45 @@ class CreatePage extends Component {
     };
   }
 
-  bookRoom = async (accessToken) => {
-    let xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = (e) => {
-      if (xhr.readyState !== 4) {
-        return;
-      }
-      if (xhr.status === 200) {
-        let data = xhr.responseText;
-        let obj = JSON.parse(data.replace(/\r?\n|\r/g, ''));
-        if (obj.code.length > 4) {
-          this.setState({ code: 'ERROR' });
-          return;
-        }
-        this.setState({ code: obj.code });
-      } else {
-        this.setState({ code: 'ERROR' });
-      }
-    };
-    xhr.open('POST', baseURI + '/bookroom');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.send('token=' + accessToken);
+  bookRoom = (token) => {
+    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    const url = baseURI + '/bookroom';
+    fetch(proxyurl + url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    })
+      .then((response) => response.text())
+      .then((content) => JSON.parse(content))
+      .then((json) => this.setState({ code: json.code }))
+      .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser?', 'error:', error));
   };
+
+  // bookRoom = async (accessToken) => {
+  //   let xhr = new XMLHttpRequest();
+  //   xhr.onreadystatechange = (e) => {
+  //     if (xhr.readyState !== 4) {
+  //       return;
+  //     }
+  //     if (xhr.status === 200) {
+  //       let data = xhr.responseText;
+  //       let obj = JSON.parse(data.replace(/\r?\n|\r/g, ''));
+  //       if (obj.code.length > 4) {
+  //         this.setState({ code: 'ERROR 1' });
+  //         return;
+  //       }
+  //       this.setState({ code: obj.code });
+  //     } else {
+  //       console.log(xhr);
+  //       this.setState({ code: 'ERROR 2' });
+  //     }
+  //   };
+  //   xhr.open('POST', baseURI + '/bookroom');
+  //   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  //   xhr.send('token=' + accessToken);
+  // };
 
   componentDidMount() {
     if (this.state.apiToken && !this.state.code) {
@@ -56,9 +73,11 @@ class CreatePage extends Component {
     return (
       <div className="color_fill">
         <div className="container">
-          <div className="logoContainer-create">
-            <img alt="logo" src={logo} className="image small" />
-          </div>
+          {!isMobile && (
+            <div className="logoContainer-create">
+              <img alt="logo" src={logo} className="image small" />
+            </div>
+          )}
           <div className="textContainer">
             <p className="text">your friends can join with the following code:</p>
           </div>
