@@ -87,7 +87,7 @@ class JoinPage extends Component {
       return this.setState({ error: content.toLowerCase() });
     }
 
-    const { id, token } = res;
+    const { token } = res; //id
     this.makePlayRequest(token);
   };
 
@@ -110,12 +110,11 @@ class JoinPage extends Component {
     return (
       <div className="color_fill">
         <div className="container">
-          {!isMobile ||
-            (isTall && (
-              <div className="logoContainer-join">
-                <img alt="logo" src={logo} className="image small-logo" />
-              </div>
-            ))}
+          {(!isMobile || isTall) && (
+            <div className="logoContainer-join">
+              <img alt="logo" src={logo} className="image small-logo" />
+            </div>
+          )}
           <p className="text">4 digit room code?</p>
           <ReactCodeInput
             type="number"

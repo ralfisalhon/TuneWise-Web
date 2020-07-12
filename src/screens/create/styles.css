@@ -34,8 +34,14 @@
   justify-content: center;
   margin-top: 10vh;
   margin-bottom: 5vh;
+  max-height: 25vh;
 }
 
 .text {
   word-wrap: break-word;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
 }

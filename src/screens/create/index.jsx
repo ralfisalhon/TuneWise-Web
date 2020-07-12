@@ -6,6 +6,7 @@ import './styles.css';
 import logo from '../../assets/tunewise_logo.png';
 
 const isMobile = window.innerWidth <= 500;
+const isTall = window.innerHeight > 650;
 
 const baseURI = 'https://tunewise.herokuapp.com';
 
@@ -15,8 +16,35 @@ class CreatePage extends Component {
     this.state = {
       apiToken: this.props.apiToken,
       code: null,
+      users: [],
     };
   }
+
+  checkPlayers = (code) => {
+    console.log('in checkPlayers');
+    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    const url = baseURI + '/players?code=' + code;
+    let that = this;
+    fetch(proxyurl + url, {
+      method: 'GET',
+    })
+      .then((response) => response.text())
+      .then((users) => {
+        setTimeout(function () {
+          // that.checkPlayers(code);
+        }, 10000);
+
+        console.log(users);
+
+        if (!users) return this.setState({ code: 'ER4OR' });
+        // eslint-disable-next-line no-eval
+        this.setState({ users: eval(users) });
+      })
+      .catch((error) => {
+        console.log('error on /players:', error);
+        this.setState({ code: 'ERROR' });
+      });
+  };
 
   bookRoom = (token) => {
     const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
@@ -30,33 +58,37 @@ class CreatePage extends Component {
     })
       .then((response) => response.text())
       .then((content) => JSON.parse(content))
-      .then((json) => this.setState({ code: json.code }))
-      .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser?', 'error:', error));
+      .then((json) => {
+        let { code } = json;
+        if (!code || code.length !== 4) return this.setState({ code: 'ERROR' });
+        this.setState({ code });
+        this.checkPlayers(code);
+      })
+      .catch((error) => {
+        console.log('error on /bookRoom:', error);
+        this.setState({ code: 'ERROR' });
+      });
   };
 
-  // bookRoom = async (accessToken) => {
-  //   let xhr = new XMLHttpRequest();
-  //   xhr.onreadystatechange = (e) => {
-  //     if (xhr.readyState !== 4) {
-  //       return;
-  //     }
-  //     if (xhr.status === 200) {
-  //       let data = xhr.responseText;
-  //       let obj = JSON.parse(data.replace(/\r?\n|\r/g, ''));
-  //       if (obj.code.length > 4) {
-  //         this.setState({ code: 'ERROR 1' });
-  //         return;
-  //       }
-  //       this.setState({ code: obj.code });
-  //     } else {
-  //       console.log(xhr);
-  //       this.setState({ code: 'ERROR 2' });
-  //     }
-  //   };
-  //   xhr.open('POST', baseURI + '/bookroom');
-  //   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  //   xhr.send('token=' + accessToken);
-  // };
+  getPlayers = (code) => {
+    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    const url = baseURI + '/players';
+    fetch(proxyurl + url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    })
+      .then((response) => response.text())
+      .then((content) => JSON.parse(content))
+      .then((json) => {
+        let { users } = json;
+        if (users && users.length > 0) return this.setState({ users });
+        return this.setState({ users: 'None' });
+      })
+      .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser?', 'error:', error));
+  };
 
   componentDidMount() {
     if (this.state.apiToken && !this.state.code) {
@@ -65,15 +97,17 @@ class CreatePage extends Component {
   }
 
   startSession() {
-    alert('boop');
+    if (this.state.code.length === 4) {
+      alert('boop');
+    }
   }
 
   render() {
-    const { code } = this.state;
+    const { code, users } = this.state;
     return (
       <div className="color_fill">
         <div className="container">
-          {!isMobile && (
+          {(!isMobile || isTall) && (
             <div className="logoContainer-create">
               <img alt="logo" src={logo} className="image small" />
             </div>
@@ -92,6 +126,15 @@ class CreatePage extends Component {
               <div style={{ marginBottom: '30px' }} />
               <Clickable text={'start session.'} filled color="white" onClick={() => this.startSession()} />
               <div style={{ marginBottom: '20px' }} />
+              <div className="row">
+                <p className="text">Connected Users:</p>
+                {users &&
+                  users.map((user) => (
+                    <p className="text" key={user.user_id}>
+                      {user.user_name + ','}
+                    </p>
+                  ))}
+              </div>
             </div>
           ) : (
             <p className="text">creating session...</p>
