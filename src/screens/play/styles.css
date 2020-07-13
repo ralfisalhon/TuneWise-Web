@@ -1,0 +1,28 @@
+.small {
+  max-width: 38vh;
+  margin-bottom: -10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+.logoContainer-info {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 40px;
+  max-height: 20vh;
+}
+
+.text {
+  text-align: center;
+  font-size: medium;
+}
+
+a {
+  color: cyan;
+  text-decoration-line: none;
+}

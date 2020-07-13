@@ -15,41 +15,45 @@ class CreatePage extends Component {
     super(props);
     this.state = {
       apiToken: this.props.apiToken,
+      name: 'You',
       code: null,
+      limit: 100,
       users: [],
     };
   }
 
   checkPlayers = (code) => {
     console.log('in checkPlayers');
-    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    // const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
     const url = baseURI + '/players?code=' + code;
     let that = this;
-    fetch(proxyurl + url, {
+    fetch(url, {
       method: 'GET',
     })
       .then((response) => response.text())
       .then((users) => {
-        setTimeout(function () {
-          // that.checkPlayers(code);
-        }, 10000);
+        if (this.state.limit > 0) {
+          setTimeout(function () {
+            that.setState({ limit: that.state.limit - 1 });
+            that.checkPlayers(code);
+          }, 8000);
+        } else {
+          return this.setState({ code: 'ERROR', error: 'timed out' });
+        }
 
-        console.log(users);
-
-        if (!users) return this.setState({ code: 'ER4OR' });
+        if (!users) return this.setState({ code: 'ERROR', error: 'no users' });
         // eslint-disable-next-line no-eval
         this.setState({ users: eval(users) });
       })
       .catch((error) => {
-        console.log('error on /players:', error);
-        this.setState({ code: 'ERROR' });
+        this.setState({ code: 'ERROR', error });
       });
   };
 
   bookRoom = (token) => {
-    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    // const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
     const url = baseURI + '/bookroom';
-    fetch(proxyurl + url, {
+    fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,14 +70,14 @@ class CreatePage extends Component {
       })
       .catch((error) => {
         console.log('error on /bookRoom:', error);
-        this.setState({ code: 'ERROR' });
+        this.setState({ code: 'ERROR', error });
       });
   };
 
   getPlayers = (code) => {
-    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    // const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
     const url = baseURI + '/players';
-    fetch(proxyurl + url, {
+    fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -87,7 +91,7 @@ class CreatePage extends Component {
         if (users && users.length > 0) return this.setState({ users });
         return this.setState({ users: 'None' });
       })
-      .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser?', 'error:', error));
+      .catch((error) => this.setState({ error }));
   };
 
   componentDidMount() {
@@ -97,8 +101,11 @@ class CreatePage extends Component {
   }
 
   startSession() {
-    if (this.state.code.length === 4) {
-      alert('boop');
+    const { code, name } = this.state;
+    if (code.length === 4 && name.length > 0) {
+      alert('boop all is good');
+    } else {
+      this.setState({ error: 'please enter a name' });
     }
   }
 
@@ -123,18 +130,18 @@ class CreatePage extends Component {
                 your name?
               </p>
               <TextInput onChange={(name) => this.setState({ name, error: '' })} />
-              <div style={{ marginBottom: '30px' }} />
-              <Clickable text={'start session.'} filled color="white" onClick={() => this.startSession()} />
-              <div style={{ marginBottom: '20px' }} />
-              <div className="row">
-                <p className="text">Connected Users:</p>
-                {users &&
-                  users.map((user) => (
-                    <p className="text" key={user.user_id}>
-                      {user.user_name + ','}
-                    </p>
-                  ))}
-              </div>
+              {users.length > 0 && (
+                <span>
+                  <div style={{ marginBottom: '30px' }} />
+                  <Clickable text={'start session.'} filled color="white" onClick={() => this.startSession()} />
+                  <div style={{ marginBottom: '10px' }} />
+                </span>
+              )}
+              <div style={{ marginBottom: '10px' }} />
+              <p className="text mobile-break">
+                Connected Users: {users && users.map((user) => user.user_name + ', ')}
+                {this.state.name}
+              </p>
             </div>
           ) : (
             <p className="text">creating session...</p>

@@ -4,6 +4,7 @@ import JoinPage from './screens/join';
 import CreatePage from './screens/create';
 import HomePage from './screens/home';
 import InfoPage from './screens/info';
+import PlayPage from './screens/play';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
@@ -43,6 +44,9 @@ class App extends Component {
                 </Route>
                 <Route path="/info">
                   <InfoPage />
+                </Route>
+                <Route path="/play">
+                  <PlayPage />
                 </Route>
                 <Route path="/">
                   {window.location.pathname === '/' && <HomePage setToken={(token) => this.setToken(token)} />}

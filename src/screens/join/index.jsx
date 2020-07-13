@@ -7,7 +7,7 @@ import './styles.css';
 import logo from '../../assets/tunewise_logo.png';
 
 const isMobile = window.innerWidth <= 500;
-const isTall = window.innerHeight > 650;
+const isTall = window.innerHeight > 700;
 
 const baseURI = 'http://tunewise.herokuapp.com';
 
@@ -61,7 +61,6 @@ class JoinPage extends Component {
   };
 
   makePlayRequest = (token) => {
-    console.log('my token is', token);
     const baseURI = 'https://api.spotify.com/v1';
     const url = baseURI + '/me/player/play';
     fetch(url, {
@@ -88,13 +87,15 @@ class JoinPage extends Component {
     }
 
     const { token } = res; //id
-    this.makePlayRequest(token);
+    window.location.href = '/play?token=' + token;
+    // this.makePlayRequest(token);
   };
 
   joinRoom = (code, name) => {
-    const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    this.setState({ error: 'joining room ' + code.toString() + '...' });
+    // const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
     const url = baseURI + '/joinroom';
-    fetch(proxyurl + url, {
+    fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -127,18 +128,21 @@ class JoinPage extends Component {
           <TextInput onChange={(name) => this.setState({ name, error: '' })} />
           {this.state.error && <p style={{ color: 'tomato', marginBottom: '-10px' }}>{this.state.error}</p>}
           <div style={{ height: '30px' }} />
-          <Clickable
-            filled
-            color="white"
-            text={'join room'}
-            onClick={() =>
-              this.state.code == null || this.state.code.length < 4
-                ? this.setState({ error: 'incomplete room code' })
-                : this.state.name.length < 1
-                ? this.setState({ error: 'please enter your name' })
-                : this.joinRoom(this.state.code, this.state.name)
-            }
-          />
+          {this.state.error.length === 0 && (
+            <Clickable
+              filled
+              color="white"
+              text={'join room'}
+              onClick={() =>
+                this.state.code == null || this.state.code.length < 4
+                  ? this.setState({ error: 'incomplete room code' })
+                  : this.state.name.length < 1
+                  ? this.setState({ error: 'please enter your name' })
+                  : this.joinRoom(this.state.code, this.state.name)
+              }
+            />
+          )}
+
           <div style={{ height: '15px' }} />
           <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
           <div style={{ height: isMobile ? '15vh' : '5vh' }} />

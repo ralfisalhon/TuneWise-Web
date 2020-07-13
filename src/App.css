@@ -1,9 +1,8 @@
 body,
 .wrapper {
   display: flex;
-  background-color: #ecf0f1;
-  /* min-height: 100%; */
-  /* height: 100vh; */
+  /* background-color: #ecf0f1; */
+  background-color: #001255;
   overflow: hidden;
   justify-content: center;
   align-items: center;
@@ -19,12 +18,14 @@ body,
   border-radius: 20px;
   justify-content: center;
   background-color: #001255;
+  border: 1px solid #ecf0f1;
   align-items: center;
   overflow: hidden;
 }
 .wrapper .innerMobile {
   display: flex;
   flex-direction: column;
+
   height: 100%;
   width: 'auto';
   justify-content: center;
