@@ -5,7 +5,7 @@ original idea by San Akdag, Nihal Pai, Mohsin Rizvi, Ralfi Salhon from Tufts Pol
 ### Localhost
 
 ```sh
-$ git clone https://github.com/ralfisalhon/ralfi.dev.git
+$ git clone https://github.com/ralfisalhon/TuneWise-Web.git
 $ cd tunewise-web
 $ npm install
 $ npm start
