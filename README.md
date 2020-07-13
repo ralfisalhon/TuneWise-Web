@@ -1,6 +1,6 @@
 _TuneWise_ \
 made by Ralfi Salhon \
-original idea by San Akdag, Nihal Pai, Mohsin Rizvi, Ralfi Salhon from Tufts Polyhack 2018 \
+original idea by San Akdag, Nihal Pai, Mohsin Rizvi, Ralfi Salhon from Tufts Polyhack 2019
 
 ### Localhost
 
@@ -11,4 +11,4 @@ $ npm install
 $ npm start
 ```
 
-`localhost:3000` is now serving the website.
+`http://192.168.7.81:3000/` is now serving the website.
