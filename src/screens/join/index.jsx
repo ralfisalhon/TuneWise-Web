@@ -87,8 +87,7 @@ class JoinPage extends Component {
     }
 
     const { token } = res; //id
-    window.location.href = '/play?token=' + token;
-    // this.makePlayRequest(token);
+    window.location.href = '/play?code=' + this.state.code + '&name=' + this.state.name + '&token=' + token;
   };
 
   joinRoom = (code, name) => {

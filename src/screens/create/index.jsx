@@ -100,10 +100,38 @@ class CreatePage extends Component {
     }
   }
 
+  handleJoinResponse = (content) => {
+    let res;
+    try {
+      res = JSON.parse(content);
+    } catch {
+      return this.setState({ error: content.toLowerCase() });
+    }
+
+    const { token } = res; //id
+    window.location.href = '/play?code=' + this.state.code + '&name=' + this.state.name + '&token=' + token;
+  };
+
+  joinRoom = (code, name) => {
+    this.setState({ error: 'joining room ' + code.toString() + '...' });
+    // const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
+    const url = baseURI + '/joinroom';
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code, name }),
+    })
+      .then((response) => response.text())
+      .then((content) => this.handleJoinResponse(content))
+      .catch(() => console.log('Can’t access ' + url + ' response. Blocked by browser?'));
+  };
+
   startSession() {
     const { code, name } = this.state;
-    if (code.length === 4 && name.length > 0) {
-      alert('boop all is good');
+    if (code.length === 4 && name.length > 0 && name !== 'You') {
+      this.joinRoom(code, name);
     } else {
       this.setState({ error: 'please enter a name' });
     }

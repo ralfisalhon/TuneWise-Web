@@ -4,7 +4,7 @@ import JoinPage from './screens/join';
 import CreatePage from './screens/create';
 import HomePage from './screens/home';
 import InfoPage from './screens/info';
-import PlayPage from './screens/play';
+import { PlayPage } from './screens/play';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
