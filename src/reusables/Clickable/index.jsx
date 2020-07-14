@@ -13,6 +13,7 @@ class Clickable extends Component {
       backgroundColor: filled ? color : 'none',
       cursor: 'pointer',
       textAlign: 'center',
+      wordWrap: 'none',
     };
   };
 
@@ -22,7 +23,7 @@ class Clickable extends Component {
       fontWeight: 'bold',
       outline: 'none',
       fontFamily: 'Courier New',
-      fontSize: small ? '15px' : '22px',
+      fontSize: small ? '14px' : '22px',
     };
   };
 

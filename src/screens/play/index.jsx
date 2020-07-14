@@ -93,7 +93,7 @@ export const PlayPage = ({ values }) => {
       setMessage(
         'other players will try to guess your song now. your song is ' +
           selectedTrack.name +
-          ' by' +
+          ' by ' +
           selectedTrack.artists[0].name
       );
       return startRound(code, selectedTrack.uri, selectedTrack.id, name);
@@ -124,7 +124,7 @@ export const PlayPage = ({ values }) => {
             setSettingSong(true);
             return setMessage('you won last round! you are picking the next song');
           }
-          return setMessage(winner_name + ' found the song! they now pick the next song');
+          return setMessage(winner_name + ' found the song! they are picking the next song');
         }
 
         if (correct === 'false') {
@@ -150,7 +150,7 @@ export const PlayPage = ({ values }) => {
             <h1 className="text name">{name}</h1>
             <p className="text">you are connected to session {code}</p>
             {message && (
-              <p className="text" style={{ margin: '0px', padding: '0px', color: settingSong ? 'green' : 'white' }}>
+              <p className="text" style={{ margin: '0px', padding: '0px', color: settingSong ? 'lime' : 'white' }}>
                 {message}
               </p>
             )}
@@ -161,6 +161,7 @@ export const PlayPage = ({ values }) => {
               style={{ width: isMobile ? '80vw' : '40vh' }}
               onChange={(value) => {
                 if (message === 'your guess is incorrect') setMessage('');
+                if (value.length < 3) setTracks([]);
                 setValue(value);
                 setCanSubmit(false);
               }}
@@ -185,7 +186,7 @@ export const PlayPage = ({ values }) => {
               <div key={track.id}>
                 <Clickable
                   small
-                  text={track.name.substring(0, isTall ? 28 : 18) + ' - ' + track.artists[0].name.substring(0, 20)}
+                  text={track.name.substring(0, isTall ? 25 : 18) + ' - ' + track.artists[0].name.substring(0, 20)}
                   onClick={() => {
                     setValue(track.name + ' - ' + track.artists[0].name.substring(0, 20));
                     console.log(track);

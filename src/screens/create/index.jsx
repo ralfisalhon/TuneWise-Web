@@ -7,18 +7,18 @@ import logo from '../../assets/tunewise_logo.png';
 import { useEffect } from 'react';
 
 const isMobile = window.innerWidth <= 500;
-const isTall = window.innerHeight > 650;
+const isTall = window.innerHeight > 750;
 
 const baseURI = 'https://tunewise.herokuapp.com';
 
-export const CreatePage = ({ values }) => {
-  console.log('my token is', values.token);
+export const CreatePage = ({ values, setValues }) => {
   const [token, setToken] = useState(values.token);
   const [name, setName] = useState('You');
   const [code, setCode] = useState(null);
   const [limit, setLimit] = useState(100);
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
+  const [joined, setJoined] = useState(false);
   useEffect(() => {
     const checkPlayers = (code) => {
       console.log('in checkPlayers');
@@ -44,9 +44,8 @@ export const CreatePage = ({ values }) => {
           setUsers(eval(users));
         })
         .catch((error) => {
-          console.log('error', error);
           setCode('ERROR');
-          setError(error);
+          setError('cant check players in session');
         });
     };
 
@@ -69,15 +68,13 @@ export const CreatePage = ({ values }) => {
           checkPlayers(code);
         })
         .catch((error) => {
-          console.log('error on /bookRoom:', error);
           setCode('ERROR');
-          setError(error);
+          setError('error on /bookRoom');
         });
     }
   }, [token, code, limit]);
 
   const makePlayRequest = (token, uri) => {
-    console.log('my token is', token, 'uri is', uri);
     const baseURI = 'https://api.spotify.com/v1';
     const url = baseURI + '/me/player/play';
     fetch(url, {
@@ -90,9 +87,17 @@ export const CreatePage = ({ values }) => {
       body: JSON.stringify({ uris: [uri] }), // wait for the moment
     })
       .then((response) => response.text())
-      .then((content) => content.json())
-      .then((json) => console.log(json))
-      .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser? Error:', error));
+      .then((content) => {
+        try {
+          let json = JSON.parse(content);
+          if (json.error.status === 404) {
+            setError('please play and then pause a song on your spotify');
+          }
+        } catch {
+          window.location.href = '/play';
+        }
+      })
+      .catch((error) => setError('stop dude'));
   };
 
   const playFirstSong = (code, song_uri, song_id, user_name) => {
@@ -108,12 +113,9 @@ export const CreatePage = ({ values }) => {
       .then((res) => {
         console.log(res);
         makePlayRequest(token, song_uri);
-        window.location.href = '/play?code=' + code + '&name=' + name + '&token=' + token;
+        setValues({ code, name, token });
       })
-      .catch((error) => {
-        console.log('error', error);
-        setError(error);
-      });
+      .catch((error) => setError('please play and then pause a song on your spotify'));
   };
 
   const handleJoinResponse = (content) => {
@@ -126,6 +128,7 @@ export const CreatePage = ({ values }) => {
 
     playFirstSong(code, 'spotify:track:48wH8bAxvBJO2l14GmNLz7', '48wH8bAxvBJO2l14GmNLz7', name);
 
+    setJoined(true);
     setToken(res.token); //id
   };
 
@@ -145,10 +148,11 @@ export const CreatePage = ({ values }) => {
   };
 
   const startSession = () => {
+    if (joined) return playFirstSong(code, 'spotify:track:48wH8bAxvBJO2l14GmNLz7', '48wH8bAxvBJO2l14GmNLz7', name);
     if (code.length === 4 && name.length > 0 && name !== 'You') {
       joinRoom(code, name);
     } else {
-      setError('please enter a name');
+      setError('please enter your name');
     }
   };
 
@@ -163,7 +167,7 @@ export const CreatePage = ({ values }) => {
               </div>
             )}
             <div className="textContainer">
-              <p className="text">your friends can join with the following code:</p>
+              <p className="text">your room code:</p>
             </div>
 
             {code && code.length > 0 ? (
@@ -179,12 +183,15 @@ export const CreatePage = ({ values }) => {
                   }}
                 />
                 {users.length > 0 && (
-                  <span>
+                  <center>
                     <div style={{ marginBottom: '30px' }} />
                     <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />
-                    <div style={{ marginBottom: '10px' }} />
-                    {error && <p style={{ color: 'tomato', marginBottom: '-10px' }}>{error}</p>}
-                  </span>
+                    {error && (
+                      <p style={{ color: 'tomato', marginBottom: '-10px', marginTop: '30px', maxWidth: '50vh' }}>
+                        {error}
+                      </p>
+                    )}
+                  </center>
                 )}
                 <div style={{ marginBottom: '10px' }} />
                 <p className="text mobile-break">

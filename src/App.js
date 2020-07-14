@@ -20,6 +20,14 @@ export const App = () => {
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 
+  const setNewVals = (newVals) => {
+    console.log('setting new vals:', newVals);
+    sessionStorage.setItem('token', newVals.token);
+    sessionStorage.setItem('name', newVals.name);
+    sessionStorage.setItem('code', newVals.code);
+    setValues(newVals);
+  };
+
   return (
     <Router>
       <Switch>
@@ -27,16 +35,17 @@ export const App = () => {
           <div className="wrapper">
             <div className={isMobile ? 'innerMobile' : 'inner'}>
               <Route path="/create">
-                <CreatePage values={values} />
+                <CreatePage
+                  values={values}
+                  setValues={(newVals) => {
+                    setNewVals(newVals);
+                  }}
+                />
               </Route>
               <Route path="/join">
                 <JoinPage
                   setValues={(newVals) => {
-                    console.log('setting new vals:', newVals);
-                    sessionStorage.setItem('token', newVals.token);
-                    sessionStorage.setItem('name', newVals.name);
-                    sessionStorage.setItem('code', newVals.code);
-                    setValues(newVals);
+                    setNewVals(newVals);
                   }}
                 />
               </Route>
