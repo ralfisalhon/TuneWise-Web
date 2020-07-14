@@ -126,7 +126,7 @@ export const CreatePage = ({ values, setValues }) => {
       return setError(content.toLowerCase());
     }
 
-    playFirstSong(code, 'spotify:track:48wH8bAxvBJO2l14GmNLz7', '48wH8bAxvBJO2l14GmNLz7', name);
+    playFirstSong(code, 'spotify:track:2cGxRwrMyEAp8dEbuZaVv6', '2cGxRwrMyEAp8dEbuZaVv6', name);
 
     setJoined(true);
     setToken(res.token); //id
@@ -148,7 +148,7 @@ export const CreatePage = ({ values, setValues }) => {
   };
 
   const startSession = () => {
-    if (joined) return playFirstSong(code, 'spotify:track:48wH8bAxvBJO2l14GmNLz7', '48wH8bAxvBJO2l14GmNLz7', name);
+    if (joined) return playFirstSong(code, 'spotify:track:2cGxRwrMyEAp8dEbuZaVv6', '2cGxRwrMyEAp8dEbuZaVv6', name);
     if (code.length === 4 && name.length > 0 && name !== 'You') {
       joinRoom(code, name);
     } else {
