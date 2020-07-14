@@ -25,7 +25,6 @@ body,
 .wrapper .innerMobile {
   display: flex;
   flex-direction: column;
-
   height: 100%;
   width: 'auto';
   justify-content: center;

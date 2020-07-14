@@ -32,34 +32,6 @@ class JoinPage extends Component {
     };
   }
 
-  searchSong = async (accessToken, query) => {
-    if (query.length === 0) this.setState({ searchResults: [] });
-    if (query.length < 3) return;
-    query = query.split(' ').join('+');
-    let xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = async (e) => {
-      if (xhr.readyState !== 4) return;
-      if (xhr.status === 200) {
-        let data = xhr.responseText;
-        let obj = JSON.parse(data);
-        let temp = obj.tracks.items;
-
-        // remove all songs without preview_url
-
-        this.setState({ searchResults: temp });
-        console.log('RALFIII');
-        console.log(obj.tracks.items);
-      } else if (xhr.status === 401) {
-        alert('Your token expired');
-      } else console.warn('Something went wrong on searchSong');
-    };
-    xhr.open('GET', 'https://api.spotify.com/v1/search?type=track&limit=10&q=' + query);
-    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    xhr.setRequestHeader('Accept', 'application/json');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send();
-  };
-
   makePlayRequest = (token) => {
     const baseURI = 'https://api.spotify.com/v1';
     const url = baseURI + '/me/player/play';
@@ -92,7 +64,6 @@ class JoinPage extends Component {
 
   joinRoom = (code, name) => {
     this.setState({ error: 'joining room ' + code.toString() + '...' });
-    // const proxyurl = 'https://cors-anywhere.herokuapp.com/'; // https://stackoverflow.com/a/43881141
     const url = baseURI + '/joinroom';
     fetch(url, {
       method: 'POST',

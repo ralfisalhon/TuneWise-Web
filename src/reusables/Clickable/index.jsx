@@ -4,11 +4,11 @@ import './styles.css';
 import PropTypes from 'prop-types';
 
 class Clickable extends Component {
-  getButtonStyle = (filled, color) => {
+  getButtonStyle = (filled, color, small) => {
     return {
-      border: '2px solid white',
+      border: small ? '1px solid white' : '2px solid white',
       borderRadius: '100px',
-      padding: '15px 30px 15px 30px',
+      padding: small ? '5px 10px 5px 10px' : '15px 30px 15px 30px',
       outline: 'none',
       backgroundColor: filled ? color : 'none',
       cursor: 'pointer',
@@ -16,27 +16,27 @@ class Clickable extends Component {
     };
   };
 
-  getTextStyle = (filled) => {
+  getTextStyle = (filled, small) => {
     return {
       color: filled ? '#001255' : 'white',
       fontWeight: 'bold',
       outline: 'none',
       fontFamily: 'Courier New',
-      fontSize: '22px',
+      fontSize: small ? '15px' : '22px',
     };
   };
 
   render() {
-    const { text, onClick, filled, color } = this.props;
+    const { text, onClick, filled, color, small } = this.props;
     return (
       <span
         className="disable-selection"
         role="button"
         tabIndex={0}
         onClick={onClick}
-        style={this.getButtonStyle(filled, color)}
+        style={this.getButtonStyle(filled, color, small)}
       >
-        <span style={this.getTextStyle(filled)}>{text}</span>
+        <span style={this.getTextStyle(filled, small)}>{text}</span>
       </span>
     );
   }
