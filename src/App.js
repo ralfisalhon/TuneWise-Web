@@ -1,63 +1,73 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import JoinPage from './screens/join';
-import CreatePage from './screens/create';
+import { JoinPage } from './screens/join';
+import { CreatePage } from './screens/create';
 import HomePage from './screens/home';
 import InfoPage from './screens/info';
 import { PlayPage } from './screens/play';
+import Clickable from './reusables/Clickable';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 const isMobile = window.innerWidth <= 500;
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      apiToken: sessionStorage.getItem('apiToken'),
-    };
+export const App = () => {
+  const [values, setValues] = useState({
+    token: sessionStorage.getItem('token'),
+    name: sessionStorage.getItem('name'),
+    code: sessionStorage.getItem('code'),
+  });
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
 
-    let vh = window.innerHeight * 0.01;
-    // Then we set the value in the --vh custom property to the root of the document
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  }
-
-  setToken = async (token) => {
-    this.setState({ apiToken: token }, () => {
-      console.log('set apiToken as', token);
-      sessionStorage.setItem('apiToken', token);
-    });
-  };
-
-  render() {
-    return (
-      <Router>
-        <Switch>
-          <React.Fragment>
-            <div className="wrapper">
-              <div className={isMobile ? 'innerMobile' : 'inner'}>
-                <Route path="/create">
-                  <CreatePage apiToken={this.state.apiToken} />
-                </Route>
-                <Route path="/join">
-                  <JoinPage />
-                </Route>
-                <Route path="/info">
-                  <InfoPage />
-                </Route>
-                <Route path="/play">
-                  <PlayPage />
-                </Route>
-                <Route path="/">
-                  {window.location.pathname === '/' && <HomePage setToken={(token) => this.setToken(token)} />}
-                </Route>
-              </div>
+  return (
+    <Router>
+      <Switch>
+        <React.Fragment>
+          <div className="wrapper">
+            <div className={isMobile ? 'innerMobile' : 'inner'}>
+              <Route path="/create">
+                <CreatePage values={values} />
+              </Route>
+              <Route path="/join">
+                <JoinPage
+                  setValues={(newVals) => {
+                    console.log('setting new vals:', newVals);
+                    sessionStorage.setItem('token', newVals.token);
+                    sessionStorage.setItem('name', newVals.name);
+                    sessionStorage.setItem('code', newVals.code);
+                    setValues(newVals);
+                  }}
+                />
+              </Route>
+              <Route path="/info">
+                <InfoPage />
+              </Route>
+              <Route path="/play">
+                {values.token ? (
+                  <PlayPage values={values} />
+                ) : (
+                  <>
+                    <p className="text">something went wrong</p>
+                    <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
+                  </>
+                )}
+              </Route>
+              <Route path="/">
+                {window.location.pathname === '/' && (
+                  <HomePage
+                    setToken={(token) => {
+                      console.log('setting token to', token);
+                      sessionStorage.setItem('token', token);
+                      setValues((...prev) => ({ ...prev, token }));
+                    }}
+                  />
+                )}
+              </Route>
             </div>
-          </React.Fragment>
-        </Switch>
-      </Router>
-    );
-  }
-}
-
-export default App;
+          </div>
+        </React.Fragment>
+      </Switch>
+    </Router>
+  );
+};

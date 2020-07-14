@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Clickable from '../../reusables/Clickable';
 import { TextInput } from '../../reusables/TextInput';
 import './styles.css';
@@ -9,7 +9,7 @@ const isMobile = window.innerWidth <= 500;
 const isTall = window.innerHeight > 650;
 const baseURI = 'https://tunewise.herokuapp.com';
 
-export const PlayPage = () => {
+export const PlayPage = ({ values }) => {
   const [value, setValue] = useState('');
   const [canSubmit, setCanSubmit] = useState(false);
   const [tracks, setTracks] = useState([]);
@@ -17,10 +17,11 @@ export const PlayPage = () => {
   const [message, setMessage] = useState('');
   const [settingSong, setSettingSong] = useState(false);
 
-  let urlParams = new URLSearchParams(window.location.search);
-  let code = urlParams.get('code');
-  let name = urlParams.get('name');
-  let token = urlParams.get('token');
+  const { code, name, token } = values;
+
+  useEffect(() => {
+    console.log('play screen values:', values);
+  }, []);
 
   const search = (query, token) => {
     if (query.length < 3) return setTracks([]);
@@ -89,7 +90,12 @@ export const PlayPage = () => {
       setSettingSong(false);
       setValue('');
       setTracks([]);
-      setMessage('other players will try to guess your song now');
+      setMessage(
+        'other players will try to guess your song now. your song is ' +
+          selectedTrack.name +
+          ' by' +
+          selectedTrack.artists[0].name
+      );
       return startRound(code, selectedTrack.uri, selectedTrack.id, name);
     }
     const url = baseURI + '/guess';
