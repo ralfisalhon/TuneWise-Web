@@ -50,7 +50,7 @@ export const PlayPage = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ code, user_id: 'NONE', guess_id: selectedTrack.id }),
+      body: JSON.stringify({ code, name, id: selectedTrack.id }),
     })
       .then((response) => response.text())
       // .then((content) => JSON.parse(content))
@@ -106,6 +106,7 @@ export const PlayPage = () => {
                 className="songResult"
                 onClick={() => {
                   setValue(track.name + ' - ' + track.artists[0].name);
+                  console.log(track);
                   setSelectedTrack(track);
                   setCanSubmit(true);
                 }}

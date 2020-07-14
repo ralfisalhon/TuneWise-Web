@@ -14,7 +14,7 @@ class CreatePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      apiToken: this.props.apiToken,
+      token: this.props.apiToken,
       name: 'You',
       code: null,
       limit: 100,
@@ -46,6 +46,7 @@ class CreatePage extends Component {
         this.setState({ users: eval(users) });
       })
       .catch((error) => {
+        console.log(error);
         this.setState({ code: 'ERROR', error });
       });
   };
@@ -91,14 +92,58 @@ class CreatePage extends Component {
         if (users && users.length > 0) return this.setState({ users });
         return this.setState({ users: 'None' });
       })
-      .catch((error) => this.setState({ error }));
+      .catch((error) => {
+        console.log(error);
+        // this.setState({ error });
+      });
   };
 
   componentDidMount() {
-    if (this.state.apiToken && !this.state.code) {
-      this.bookRoom(this.state.apiToken);
+    if (this.state.token && !this.state.code) {
+      this.bookRoom(this.state.token);
     }
   }
+
+  makePlayRequest = (token, uri) => {
+    console.log('my token is', token, 'uri is', uri);
+    const baseURI = 'https://api.spotify.com/v1';
+    const url = baseURI + '/me/player/play';
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ uris: [uri] }), // wait for the moment
+    })
+      .then((response) => response.text())
+      .then((content) => content.json())
+      .then((json) => console.log(json))
+      .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser? Error:', error));
+  };
+
+  playFirstSong = (code, song_uri, song_id, user_name) => {
+    const url = baseURI + '/startround';
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code, song_uri, song_id, user_name }),
+    })
+      .then((response) => response.text())
+      .then((res) => {
+        console.log(res);
+        this.makePlayRequest(this.state.token, song_uri);
+        window.location.href =
+          '/play?code=' + this.state.code + '&name=' + this.state.name + '&token=' + this.state.token;
+      })
+      .catch((error) => {
+        console.log(error);
+        // this.setState({ error });
+      });
+  };
 
   handleJoinResponse = (content) => {
     let res;
@@ -108,8 +153,11 @@ class CreatePage extends Component {
       return this.setState({ error: content.toLowerCase() });
     }
 
-    const { token } = res; //id
-    window.location.href = '/play?code=' + this.state.code + '&name=' + this.state.name + '&token=' + token;
+    const { name, code } = this.state;
+    this.playFirstSong(code, 'spotify:track:48wH8bAxvBJO2l14GmNLz7', '48wH8bAxvBJO2l14GmNLz7', name);
+
+    const { token } = res;
+    this.setState({ token });
   };
 
   joinRoom = (code, name) => {
@@ -163,6 +211,7 @@ class CreatePage extends Component {
                   <div style={{ marginBottom: '30px' }} />
                   <Clickable text={'start session.'} filled color="white" onClick={() => this.startSession()} />
                   <div style={{ marginBottom: '10px' }} />
+                  {this.state.error && <p style={{ color: 'tomato', marginBottom: '-10px' }}>{this.state.error}</p>}
                 </span>
               )}
               <div style={{ marginBottom: '10px' }} />
