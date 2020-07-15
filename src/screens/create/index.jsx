@@ -107,7 +107,12 @@ export const CreatePage = ({ values, setValues }) => {
       .then((response) => response.text())
       .then((res) => {
         console.log('before playSong res is', res);
-        playSong(token, song_uri, setError);
+        playSong(
+          token,
+          song_uri,
+          (error) => setError(error),
+          () => (window.location.href = '/play')
+        );
       })
       .catch((error) => {
         setError('please play and then pause a song on your spotify');
@@ -179,7 +184,7 @@ export const CreatePage = ({ values, setValues }) => {
                     setError('');
                   }}
                 />
-                {users.length >= 0 && (
+                {users.length > 0 && (
                   <center>
                     <div style={{ marginBottom: '30px' }} />
                     <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />

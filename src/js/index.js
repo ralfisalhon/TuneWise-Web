@@ -24,6 +24,6 @@ export const playSong = (token, uri, errorFn = () => {}, successFn = () => {}) =
     })
     .catch((error) => {
       console.log('error on /playSong:', error);
-      errorFn('check console.');
+      errorFn('something went wrong. check console.');
     });
 };
