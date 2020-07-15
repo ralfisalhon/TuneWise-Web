@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import Clickable from '../../reusables/Clickable';
-import './styles.css';
+import { Clickable } from '../../reusables/Clickable';
 import logo from '../../assets/tunewise_logo.png';
+import './styles.css';
 
 const authEndpoint = 'https://accounts.spotify.com/authorize?';
 const clientId = '895eddbce28a406e92d83b3ca8451560';
-// const redirectUri = 'http://localhost:3000';
-const redirectUri = 'http://192.168.7.81:3000';
+const redirectUri = window.location.href;
 const scopes = ['user-modify-playback-state'];
 const hash = window.location.hash
   .substring(1)

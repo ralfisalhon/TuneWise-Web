@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Clickable from '../../reusables/Clickable';
+import { Clickable } from '../../reusables/Clickable';
 import { TextInput } from '../../reusables/TextInput';
-import './styles.css';
-
+import { playSong } from '../../js';
 import logo from '../../assets/tunewise_logo.png';
-
-const isMobile = window.innerWidth <= 500;
-const isTall = window.innerHeight > 700;
-const baseURI = 'https://tunewise.herokuapp.com';
+import { isMobile, isTall, herokuURL } from './../../constants.js';
+import './styles.css';
 
 export const PlayPage = ({ values }) => {
   const [value, setValue] = useState('');
@@ -47,27 +44,8 @@ export const PlayPage = ({ values }) => {
       .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser? Error:', error));
   };
 
-  const playSong = (token, uri) => {
-    console.log('my token is', token, 'uri is', uri);
-    const baseURI = 'https://api.spotify.com/v1';
-    const url = baseURI + '/me/player/play';
-    fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ uris: [uri] }),
-    })
-      .then((response) => response.text())
-      .then((content) => content.json())
-      .then((json) => console.log(json))
-      .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser? Error:', error));
-  };
-
   const startRound = (code, song_uri, song_id, user_name) => {
-    const url = baseURI + '/startround';
+    const url = herokuURL + '/startround';
     fetch(url, {
       method: 'POST',
       headers: {
@@ -78,7 +56,7 @@ export const PlayPage = ({ values }) => {
       .then((response) => response.text())
       .then((res) => {
         console.log(res);
-        playSong(token, song_uri);
+        playSong(token, song_uri, (error) => console.log('error in play', error));
       })
       .catch((error) => {
         console.log(error);
@@ -99,7 +77,7 @@ export const PlayPage = ({ values }) => {
       );
       return startRound(code, selectedTrack.uri, selectedTrack.id, name);
     }
-    const url = baseURI + '/guess';
+    const url = herokuURL + '/guess';
     fetch(url, {
       method: 'POST',
       headers: {

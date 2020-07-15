@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import './App.css';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { JoinPage } from './screens/join';
 import { CreatePage } from './screens/create';
 import HomePage from './screens/home';
-import InfoPage from './screens/info';
+import { InfoPage } from './screens/info';
 import { PlayPage } from './screens/play';
-import Clickable from './reusables/Clickable';
-
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
-const isMobile = window.innerWidth <= 500;
+import { Clickable } from './reusables/Clickable';
+import { isMobile } from './constants.js';
+import './App.css';
 
 export const App = () => {
   const [values, setValues] = useState({

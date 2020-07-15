@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import Clickable from '../../reusables/Clickable';
+import { Clickable } from '../../reusables/Clickable';
 import { TextInput } from '../../reusables/TextInput';
-import ReactCodeInput from 'react-code-input';
-import './styles.css';
-
 import logo from '../../assets/tunewise_logo.png';
-
-const isMobile = window.innerWidth <= 500;
-const isTall = window.innerHeight > 650;
-
-const baseURI = 'http://tunewise.herokuapp.com';
+import ReactCodeInput from 'react-code-input';
+import { isMobile, isTall, herokuURL } from './../../constants.js';
+import './styles.css';
 
 const inputStyle = {
   maxWidth: '20px',
@@ -42,7 +37,7 @@ export const JoinPage = ({ setValues }) => {
 
   const joinRoom = () => {
     setError('joining room ' + code.toString() + '...');
-    const url = baseURI + '/joinroom';
+    const url = herokuURL + '/joinroom';
     fetch(url, {
       method: 'POST',
       headers: {
@@ -52,7 +47,7 @@ export const JoinPage = ({ setValues }) => {
     })
       .then((response) => response.text())
       .then((content) => handleJoinResponse(content))
-      .catch(() => console.log('Can’t access ' + url + ' response. Blocked by browser?'));
+      .catch(() => setError('something went wrong joining the room.'));
   };
 
   return (
@@ -81,7 +76,11 @@ export const JoinPage = ({ setValues }) => {
             setError('');
           }}
         />
-        {error && <p style={{ color: 'tomato', marginBottom: '-10px' }}>{error}</p>}
+        {error && (
+          <center>
+            <p style={{ color: 'tomato', marginBottom: '-10px', width: '50vh' }}>{error}</p>
+          </center>
+        )}
         <div style={{ height: '30px' }} />
         {error.length === 0 && (
           <Clickable

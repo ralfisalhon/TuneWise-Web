@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
-import Clickable from '../../reusables/Clickable';
+import React, { useState, useEffect } from 'react';
+import { Clickable } from '../../reusables/Clickable';
 import { TextInput } from '../../reusables/TextInput';
-import './styles.css';
-
 import logo from '../../assets/tunewise_logo.png';
-import { useEffect } from 'react';
-
-const isMobile = window.innerWidth <= 500;
-const isTall = window.innerHeight > 750;
-
-const baseURI = 'https://tunewise.herokuapp.com';
+import { isMobile, isTall, herokuURL } from './../../constants.js';
+import { playSong } from '../../js';
+import './styles.css';
 
 export const CreatePage = ({ values, setValues }) => {
   const [token, setToken] = useState(values.token);
@@ -22,7 +17,7 @@ export const CreatePage = ({ values, setValues }) => {
   useEffect(() => {
     const checkPlayers = (code) => {
       console.log('in checkPlayers');
-      const url = baseURI + '/players?code=' + code;
+      const url = herokuURL + '/players?code=' + code;
       fetch(url, {
         method: 'GET',
       })
@@ -51,7 +46,7 @@ export const CreatePage = ({ values, setValues }) => {
 
     // bookroom
     if (token && !code) {
-      const url = baseURI + '/bookroom';
+      const url = herokuURL + '/bookroom';
       fetch(url, {
         method: 'POST',
         headers: {
@@ -74,34 +69,34 @@ export const CreatePage = ({ values, setValues }) => {
     }
   }, [token, code, limit]);
 
-  const makePlayRequest = (token, uri) => {
-    const baseURI = 'https://api.spotify.com/v1';
-    const url = baseURI + '/me/player/play';
-    fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ uris: [uri] }), // wait for the moment
-    })
-      .then((response) => response.text())
-      .then((content) => {
-        try {
-          let json = JSON.parse(content);
-          if (json.error.status === 404) {
-            setError('please play and then pause a song on your spotify');
-          }
-        } catch {
-          window.location.href = '/play';
-        }
-      })
-      .catch((error) => setError('stop dude'));
-  };
+  // const makePlayRequest = (token, uri) => {
+  //   const baseURI = 'https://api.spotify.com/v1';
+  //   const url = baseURI + '/me/player/play';
+  //   fetch(url, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Authorization': 'Bearer ' + token,
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ uris: [uri] }), // wait for the moment
+  //   })
+  //     .then((response) => response.text())
+  //     .then((content) => {
+  //       try {
+  //         let json = JSON.parse(content);
+  //         if (json.error.status === 404) {
+  //           setError('please play and then pause a song on your spotify');
+  //         }
+  //       } catch {
+  //         window.location.href = '/play';
+  //       }
+  //     })
+  //     .catch((error) => setError('stop dude'));
+  // };
 
   const playFirstSong = (code, song_uri, song_id, user_name) => {
-    const url = baseURI + '/startround';
+    const url = herokuURL + '/startround';
     fetch(url, {
       method: 'POST',
       headers: {
@@ -111,11 +106,13 @@ export const CreatePage = ({ values, setValues }) => {
     })
       .then((response) => response.text())
       .then((res) => {
-        console.log(res);
-        makePlayRequest(token, song_uri);
-        setValues({ code, name, token });
+        console.log('before playSong res is', res);
+        playSong(token, song_uri, setError);
       })
-      .catch((error) => setError('please play and then pause a song on your spotify'));
+      .catch((error) => {
+        setError('please play and then pause a song on your spotify');
+        console.log('couldnt play first song:', error);
+      });
   };
 
   const handleJoinResponse = (content) => {
@@ -134,7 +131,7 @@ export const CreatePage = ({ values, setValues }) => {
 
   const joinRoom = (code, name) => {
     setError('joining room ' + code.toString() + '...');
-    const url = baseURI + '/joinroom';
+    const url = herokuURL + '/joinroom';
     fetch(url, {
       method: 'POST',
       headers: {
@@ -144,7 +141,7 @@ export const CreatePage = ({ values, setValues }) => {
     })
       .then((response) => response.text())
       .then((content) => handleJoinResponse(content))
-      .catch(() => console.log('Can’t access ' + url + ' response. Blocked by browser?'));
+      .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser?', error));
   };
 
   const startSession = () => {
@@ -182,14 +179,16 @@ export const CreatePage = ({ values, setValues }) => {
                     setError('');
                   }}
                 />
-                {users.length > 0 && (
+                {users.length >= 0 && (
                   <center>
                     <div style={{ marginBottom: '30px' }} />
                     <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />
                     {error && (
-                      <p style={{ color: 'tomato', marginBottom: '-10px', marginTop: '30px', maxWidth: '50vh' }}>
-                        {error}
-                      </p>
+                      <center>
+                        <p style={{ color: 'tomato', marginBottom: '-10px', marginTop: '30px', width: '40vh' }}>
+                          {error}
+                        </p>
+                      </center>
                     )}
                   </center>
                 )}
