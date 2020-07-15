@@ -10,27 +10,25 @@ export const CreatePage = ({ values, setValues }) => {
   const [token, setToken] = useState(values.token);
   const [name, setName] = useState('You');
   const [code, setCode] = useState(null);
-  const [limit, setLimit] = useState(100);
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
   const [joined, setJoined] = useState(false);
   useEffect(() => {
-    const checkPlayers = (code) => {
-      console.log('in checkPlayers');
+    const checkPlayers = (code, remainingCalls = 50) => {
+      console.count('in checkPlayers');
       const url = herokuURL + '/players?code=' + code;
       fetch(url, {
         method: 'GET',
       })
         .then((response) => response.text())
         .then((users) => {
-          if (limit > 0) {
+          if (remainingCalls > 0) {
             setTimeout(function () {
-              setLimit(limit - 1);
-              checkPlayers(code);
+              checkPlayers(code, remainingCalls - 1);
             }, 8000);
           } else {
-            setCode('ERROR');
             setError('timed out');
+            setCode('ERROR');
             return;
           }
 
@@ -67,7 +65,7 @@ export const CreatePage = ({ values, setValues }) => {
           setError('error on /bookRoom');
         });
     }
-  }, [token, code, limit]);
+  }, [token, code]);
 
   // const makePlayRequest = (token, uri) => {
   //   const baseURI = 'https://api.spotify.com/v1';
@@ -183,17 +181,15 @@ export const CreatePage = ({ values, setValues }) => {
                     setError('');
                   }}
                 />
+                {error && (
+                  <center>
+                    <p style={{ color: 'tomato', marginBottom: '-10px', marginTop: '30px', width: '40vh' }}>{error}</p>
+                  </center>
+                )}
                 {users.length > 0 && (
                   <center>
                     <div style={{ marginBottom: '30px' }} />
                     <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />
-                    {error && (
-                      <center>
-                        <p style={{ color: 'tomato', marginBottom: '-10px', marginTop: '30px', width: '40vh' }}>
-                          {error}
-                        </p>
-                      </center>
-                    )}
                   </center>
                 )}
                 <div style={{ marginBottom: '10px' }} />
