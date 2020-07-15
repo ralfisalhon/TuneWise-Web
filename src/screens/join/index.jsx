@@ -7,7 +7,7 @@ import './styles.css';
 import logo from '../../assets/tunewise_logo.png';
 
 const isMobile = window.innerWidth <= 500;
-const isTall = window.innerHeight > 700;
+const isTall = window.innerHeight > 650;
 
 const baseURI = 'http://tunewise.herokuapp.com';
 
@@ -59,9 +59,9 @@ export const JoinPage = ({ setValues }) => {
     <div className="color_fill">
       <div className="container">
         {(!isMobile || isTall) && (
-          <div className="logoContainer-join">
+          <center className="logoContainer-join">
             <img alt="logo" src={logo} className="image small-logo" />
-          </div>
+          </center>
         )}
         <p className="text">4 digit room code?</p>
         <ReactCodeInput

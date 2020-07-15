@@ -6,7 +6,7 @@ import './styles.css';
 import logo from '../../assets/tunewise_logo.png';
 
 const isMobile = window.innerWidth <= 500;
-const isTall = window.innerHeight > 650;
+const isTall = window.innerHeight > 700;
 const baseURI = 'https://tunewise.herokuapp.com';
 
 export const PlayPage = ({ values }) => {
@@ -16,12 +16,13 @@ export const PlayPage = ({ values }) => {
   const [selectedTrack, setSelectedTrack] = useState({});
   const [message, setMessage] = useState('');
   const [settingSong, setSettingSong] = useState(false);
+  const [score, setScore] = useState(0);
 
   const { code, name, token } = values;
 
   useEffect(() => {
     console.log('play screen values:', values);
-  }, []);
+  }, [values]);
 
   const search = (query, token) => {
     if (query.length < 3) return setTracks([]);
@@ -104,7 +105,7 @@ export const PlayPage = ({ values }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ code, name, id: selectedTrack.id }),
+      body: JSON.stringify({ code, name: name + ' (' + (score + 1).toString() + ' pts)', id: selectedTrack.id }),
     })
       .then((response) => response.text())
       .then((content) => JSON.parse(content))
@@ -116,6 +117,7 @@ export const PlayPage = ({ values }) => {
           setSettingSong(true);
           setValue('');
           setTracks([]);
+          setScore(score + 1);
           return setMessage('you got it! you pick the next song');
         }
 
@@ -141,13 +143,18 @@ export const PlayPage = ({ values }) => {
     <div>
       <div className="container" style={{ marginBottom: isMobile ? '15vw' : '' }}>
         {(!isMobile || isTall) && (
-          <div className="logoContainer-play">
+          <center className="logoContainer-play">
             <img alt="logo" src={logo} className="image small" />
-          </div>
+          </center>
         )}
         {token && code && name ? (
           <>
-            <h1 className="text name">{name}</h1>
+            <h1 className="text name">
+              {name}
+              {' ('}
+              {score.toString()}
+              {')'}
+            </h1>
             <p className="text">you are connected to session {code}</p>
             {message && (
               <p className="text" style={{ margin: '0px', padding: '0px', color: settingSong ? 'lime' : 'white' }}>
