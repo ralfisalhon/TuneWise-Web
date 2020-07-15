@@ -106,7 +106,6 @@ export const CreatePage = ({ values, setValues }) => {
     })
       .then((response) => response.text())
       .then((res) => {
-        console.log('before playSong res is', res);
         playSong(
           token,
           song_uri,

@@ -19,7 +19,7 @@ export const App = () => {
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 
   const setNewVals = (newVals) => {
-    console.log('setting new vals:', newVals);
+    console.log('updating sessionStorage');
     sessionStorage.setItem('token', newVals.token);
     sessionStorage.setItem('name', newVals.name);
     sessionStorage.setItem('code', newVals.code);

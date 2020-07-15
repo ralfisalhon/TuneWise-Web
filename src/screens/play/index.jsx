@@ -37,9 +37,6 @@ export const PlayPage = ({ values }) => {
     })
       .then((response) => response.text())
       .then((content) => JSON.parse(content).tracks.items)
-      // .then((ree) => {
-      //   console.log(ree);
-      // })
       .then((tracks) => setTracks(tracks))
       .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser? Error:', error));
   };
@@ -55,12 +52,11 @@ export const PlayPage = ({ values }) => {
     })
       .then((response) => response.text())
       .then((res) => {
-        console.log(res);
+        console.log('res on startRound', res);
         playSong(token, song_uri, (error) => console.log('error in play', error));
       })
       .catch((error) => {
-        console.log(error);
-        // this.setState({ error });
+        console.log('error on startRound', error);
       });
   };
 
@@ -88,7 +84,7 @@ export const PlayPage = ({ values }) => {
       .then((response) => response.text())
       .then((content) => JSON.parse(content))
       .then((json) => {
-        console.log(json);
+        console.log('submit response json', json);
         const { correct, someone_won, winner_name } = json;
 
         if (correct && correct === 'true') {
@@ -174,26 +170,13 @@ export const PlayPage = ({ values }) => {
                   text={track.name.substring(0, isTall ? 25 : 18) + ' - ' + track.artists[0].name.substring(0, 20)}
                   onClick={() => {
                     setValue(track.name + ' - ' + track.artists[0].name.substring(0, 20));
-                    console.log(track);
+                    console.log('selected track', track);
                     setSelectedTrack(track);
                     setCanSubmit(true);
                   }}
                 />
                 <div style={{ height: '20px' }} />
               </div>
-              // <p
-              //   key={track.id}
-              //   className="songResult"
-              // onClick={() => {
-              //   setValue(track.name + ' - ' + track.artists[0].name);
-              //   console.log(track);
-              //   setSelectedTrack(track);
-              //   setCanSubmit(true);
-              // }}
-              // >
-              //   {track.name.substring(0, 25)}
-              //   {track.name.length > 25 && '...'} - {track.artists[0].name}
-              // </p>
             ))}
           </>
         ) : (
