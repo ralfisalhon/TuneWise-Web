@@ -53,7 +53,12 @@ export const PlayPage = ({ values }) => {
       .then((response) => response.text())
       .then((res) => {
         console.log('res on startRound', res);
-        playSong(token, song_uri, (error) => console.log('error in play', error));
+        playSong(
+          token,
+          song_uri,
+          (error) => console.log('error in play', error),
+          (success) => console.log('success in play', success)
+        );
       })
       .catch((error) => {
         console.log('error on startRound', error);

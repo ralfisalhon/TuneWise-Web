@@ -2,6 +2,10 @@ _TuneWise_ \
 made by Ralfi Salhon \
 original idea by San Akdag, Nihal Pai, Mohsin Rizvi, Ralfi Salhon from Tufts Polyhack 2019
 
+### Hosted Online at
+
+https://tunewise.app
+
 ### Localhost
 
 ```sh
@@ -11,4 +15,8 @@ $ npm install
 $ npm start
 ```
 
-`http://192.168.7.81:3000/` is now serving the website.
+`http://localhost:3000/` is now serving the website.
+
+### Server Code
+
+https://github.com/ralfisalhon/TuneWise/blob/master/index.js

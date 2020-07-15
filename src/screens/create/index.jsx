@@ -67,32 +67,6 @@ export const CreatePage = ({ values, setValues }) => {
     }
   }, [token, code]);
 
-  // const makePlayRequest = (token, uri) => {
-  //   const baseURI = 'https://api.spotify.com/v1';
-  //   const url = baseURI + '/me/player/play';
-  //   fetch(url, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Authorization': 'Bearer ' + token,
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ uris: [uri] }), // wait for the moment
-  //   })
-  //     .then((response) => response.text())
-  //     .then((content) => {
-  //       try {
-  //         let json = JSON.parse(content);
-  //         if (json.error.status === 404) {
-  //           setError('please play and then pause a song on your spotify');
-  //         }
-  //       } catch {
-  //         window.location.href = '/play';
-  //       }
-  //     })
-  //     .catch((error) => setError('stop dude'));
-  // };
-
   const playFirstSong = (code, song_uri, song_id, user_name) => {
     const url = herokuURL + '/startround';
     fetch(url, {
@@ -195,7 +169,7 @@ export const CreatePage = ({ values, setValues }) => {
                 <div style={{ marginBottom: '10px' }} />
                 <p className="text mobile-break">
                   Connected Users: {users && users.map((user) => user.user_name + ', ')}
-                  {name}
+                  {joined ? name : ''}
                 </p>
               </div>
             ) : (
