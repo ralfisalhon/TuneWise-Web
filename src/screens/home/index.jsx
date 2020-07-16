@@ -49,7 +49,7 @@ class HomePage extends Component {
         <div style={{ height: '10px' }} />
         <Clickable text={'join existing.'} onClick={() => (window.location.href = '/join')} />
         <p className="text what" onClick={() => (window.location.href = '/info')}>
-          what is TuneWise?
+          what is tunewise?
         </p>
       </div>
     );

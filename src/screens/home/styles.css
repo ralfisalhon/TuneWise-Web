@@ -24,3 +24,14 @@
   width: 70vw;
   max-width: 30vh;
 }
+
+.small-image {
+  width: 50vw;
+}
+
+.beta {
+  margin: 0px;
+  padding: 0px;
+  font-size: 12px !important;
+  color: lightgray !important;
+}

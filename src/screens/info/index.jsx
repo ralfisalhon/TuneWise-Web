@@ -14,9 +14,9 @@ export const InfoPage = () => {
           </div>
         )}
         <p className="text">tunewise is a music centered party game.</p>
-        <p className="text">one user connects their spotify and starts a session</p>
+        <p className="text">one user connects their spotify account and starts a session.</p>
         <p className="text">
-          all players try to guess the songs being played. if they do, they win a point and play the next song.
+          each round, players try to guess the song being played. if they do, they win a point and play the next song.
         </p>
         <p className="text">
           we originally built tunewise as a mobile app at tufts polyhack 2019. shoutout to mohsin, nihal, san!

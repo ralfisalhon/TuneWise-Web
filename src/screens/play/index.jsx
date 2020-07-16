@@ -14,11 +14,14 @@ export const PlayPage = ({ values }) => {
   const [message, setMessage] = useState('');
   const [settingSong, setSettingSong] = useState(false);
   const [score, setScore] = useState(0);
+  const [submittedTrack, setSubmittedTrack] = useState('');
 
   const { code, name, token } = values;
 
   useEffect(() => {
-    console.log('play screen values:', values);
+    if (!code || !name || !token) {
+      console.log('play screen values:', values);
+    }
   }, [values]);
 
   const search = (query, token) => {
@@ -66,6 +69,11 @@ export const PlayPage = ({ values }) => {
   };
 
   const submit = () => {
+    if (selectedTrack.id === submittedTrack.id) {
+      setScore(score - 1);
+      setSettingSong(true);
+    }
+
     if (settingSong) {
       setSettingSong(false);
       setValue('');
@@ -76,6 +84,7 @@ export const PlayPage = ({ values }) => {
           ' by ' +
           selectedTrack.artists[0].name
       );
+      setSubmittedTrack(selectedTrack);
       return startRound(code, selectedTrack.uri, selectedTrack.id, name);
     }
     const url = herokuURL + '/guess';
@@ -123,7 +132,7 @@ export const PlayPage = ({ values }) => {
       <div className="container" style={{ marginBottom: isMobile ? '15vw' : '' }}>
         {(!isMobile || isTall) && (
           <center className="logoContainer-play">
-            <img alt="logo" src={logo} className="image small" />
+            <img alt="logo" src={logo} className="image small-image" />
           </center>
         )}
         {token && code && name ? (

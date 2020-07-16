@@ -44,6 +44,7 @@ export const CreatePage = ({ values, setValues }) => {
 
     // bookroom
     if (token && !code) {
+      setError('creating session...');
       const url = herokuURL + '/bookroom';
       fetch(url, {
         method: 'POST',
@@ -56,9 +57,10 @@ export const CreatePage = ({ values, setValues }) => {
         .then((content) => JSON.parse(content))
         .then((json) => {
           let { code } = json;
-          if (!code || code.length !== 4) return setError('ERROR');
+          if (!code || code.length !== 4) return setError('please try again.');
           setCode(code);
           checkPlayers(code);
+          setError('');
         })
         .catch((error) => {
           setCode('ERROR');
@@ -82,7 +84,10 @@ export const CreatePage = ({ values, setValues }) => {
           token,
           song_uri,
           (error) => setError(error),
-          () => (window.location.href = '/play')
+          () => {
+            setValues({ code, name, token });
+            window.location.href = '/play';
+          }
         );
       })
       .catch((error) => {
@@ -139,42 +144,43 @@ export const CreatePage = ({ values, setValues }) => {
                 <img alt="logo" src={logo} className="image small" />
               </div>
             )}
-            <div className="textContainer">
-              <p className="text">your room code:</p>
-            </div>
 
-            {code && code.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <p className="text code">{code}</p>
-                <p className="text" style={{ marginTop: '-5px' }}>
-                  your name?
-                </p>
-                <TextInput
-                  onChange={(name) => {
-                    setName(name);
-                    setError('');
-                  }}
-                />
-                {error && (
-                  <center>
-                    <p style={{ color: 'tomato', marginBottom: '-10px', marginTop: '30px', width: '40vh' }}>{error}</p>
-                  </center>
-                )}
-                {users.length > 0 && (
-                  <center>
-                    <div style={{ marginBottom: '30px' }} />
-                    <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />
-                  </center>
-                )}
-                <div style={{ marginBottom: '10px' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              {code && (
+                <>
+                  <p className="text">your room code:</p>
+                  <p className="text code">{code}</p>
+                  <p className="text" style={{ marginTop: '-5px' }}>
+                    your name?
+                  </p>
+                  <TextInput
+                    onChange={(name) => {
+                      setName(name);
+                      setError('');
+                    }}
+                  />
+                </>
+              )}
+              {error && (
+                <center>
+                  <p style={{ color: 'tomato', marginBottom: '-10px', marginTop: '30px', width: '40vh' }}>{error}</p>
+                  <div style={{ marginBottom: '10px' }} />
+                </center>
+              )}
+              {users.length > 0 && (
+                <center>
+                  <div style={{ marginBottom: '30px' }} />
+                  <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />
+                </center>
+              )}
+              <div style={{ marginBottom: '10px' }} />
+              {code && (
                 <p className="text mobile-break">
                   Connected Users: {users && users.map((user) => user.user_name + ', ')}
-                  {joined ? name : ''}
+                  {!joined ? name : ''}
                 </p>
-              </div>
-            ) : (
-              <p className="text">creating session...</p>
-            )}
+              )}
+            </div>
 
             <Clickable text={'go back'} onClick={() => (window.location.href = '/')} />
             <div style={{ height: isMobile ? '20vh' : '10vh' }} />

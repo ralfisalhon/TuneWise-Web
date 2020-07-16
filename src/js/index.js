@@ -14,7 +14,10 @@ export const playSong = (token, uri, errorFn = () => {}, successFn = () => {}) =
   })
     .then((content) => {
       const status = content.status;
-      if (status === 401) {
+      if (status === 403 || status === 404) {
+        errorFn('could not authenticate. please login with spotify again.');
+      }
+      if (status === 401 || status === 404) {
         errorFn('could not play song. try playing and pausing a song on your spotify.');
       } else if (status === 204) {
         successFn();
