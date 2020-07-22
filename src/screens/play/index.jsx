@@ -22,7 +22,7 @@ export const PlayPage = ({ values }) => {
     if (!code || !name || !token) {
       console.log('play screen values:', values);
     }
-  }, [values]);
+  }, [values, code, name, token]);
 
   const search = (query, token) => {
     if (query.length < 3) return setTracks([]);
@@ -44,14 +44,14 @@ export const PlayPage = ({ values }) => {
       .catch((error) => console.log('Can’t access ' + url + ' response. Blocked by browser? Error:', error));
   };
 
-  const startRound = (code, song_uri, song_id, user_name) => {
+  const startRound = (code, song_uri, song_id, song_name, song_artist, user_name) => {
     const url = herokuURL + '/startround';
     fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ code, song_uri, song_id, user_name }),
+      body: JSON.stringify({ code, song_uri, song_id, song_name, song_artist, user_name }),
     })
       .then((response) => response.text())
       .then((res) => {
@@ -85,7 +85,14 @@ export const PlayPage = ({ values }) => {
           selectedTrack.artists[0].name
       );
       setSubmittedTrack(selectedTrack);
-      return startRound(code, selectedTrack.uri, selectedTrack.id, name);
+      return startRound(
+        code,
+        selectedTrack.uri,
+        selectedTrack.id,
+        selectedTrack.name,
+        selectedTrack.artists[0].name,
+        name
+      );
     }
     const url = herokuURL + '/guess';
     fetch(url, {

@@ -15,7 +15,6 @@ export const CreatePage = ({ values, setValues }) => {
   const [joined, setJoined] = useState(false);
   useEffect(() => {
     const checkPlayers = (code, remainingCalls = 50) => {
-      console.count('in checkPlayers');
       const url = herokuURL + '/players?code=' + code;
       fetch(url, {
         method: 'GET',
@@ -69,26 +68,35 @@ export const CreatePage = ({ values, setValues }) => {
     }
   }, [token, code]);
 
-  const playFirstSong = (code, song_uri, song_id, user_name) => {
+  const startRound = (code, song_uri, song_id, song_name, song_artist, user_name) => {
     const url = herokuURL + '/startround';
     fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ code, song_uri, song_id, user_name }),
+      body: JSON.stringify({ code, song_uri, song_id, song_name, song_artist, user_name }),
     })
       .then((response) => response.text())
       .then((res) => {
-        playSong(
-          token,
-          song_uri,
-          (error) => setError(error),
-          () => {
-            setValues({ code, name, token });
-            window.location.href = '/play';
+        try {
+          let json = JSON.parse(res);
+          if (json.success) {
+            playSong(
+              token,
+              song_uri,
+              (error) => setError(error),
+              () => {
+                setValues({ code, name, token });
+                // alert('navigate to /play');
+                window.location.href = '/play';
+              }
+            );
           }
-        );
+        } catch {
+          console.log('startround error response:', res);
+          setError('error on starting round');
+        }
       })
       .catch((error) => {
         setError('please play and then pause a song on your spotify');
@@ -104,7 +112,14 @@ export const CreatePage = ({ values, setValues }) => {
       return setError(content.toLowerCase());
     }
 
-    playFirstSong(code, 'spotify:track:2cGxRwrMyEAp8dEbuZaVv6', '2cGxRwrMyEAp8dEbuZaVv6', name);
+    startRound(
+      code,
+      'spotify:track:2cGxRwrMyEAp8dEbuZaVv6',
+      '2cGxRwrMyEAp8dEbuZaVv6',
+      'Instant Crush (feat. Julian Casablancas)',
+      name,
+      'Daft Punk'
+    );
 
     setJoined(true);
     setToken(res.token); //id
@@ -126,7 +141,15 @@ export const CreatePage = ({ values, setValues }) => {
   };
 
   const startSession = () => {
-    if (joined) return playFirstSong(code, 'spotify:track:2cGxRwrMyEAp8dEbuZaVv6', '2cGxRwrMyEAp8dEbuZaVv6', name);
+    if (joined)
+      return startRound(
+        code,
+        'spotify:track:2cGxRwrMyEAp8dEbuZaVv6',
+        '2cGxRwrMyEAp8dEbuZaVv6',
+        'Instant Crush (feat. Julian Casablancas)',
+        name,
+        'Daft Punk'
+      );
     if (code.length === 4 && name.length > 0 && name !== 'You') {
       joinRoom(code, name);
     } else {
@@ -167,7 +190,7 @@ export const CreatePage = ({ values, setValues }) => {
                   <div style={{ marginBottom: '10px' }} />
                 </center>
               )}
-              {users.length > 0 && (
+              {users.length >= 0 && (
                 <center>
                   <div style={{ marginBottom: '30px' }} />
                   <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />
