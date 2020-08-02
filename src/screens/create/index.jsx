@@ -6,13 +6,18 @@ import { isMobile, isTall, herokuURL } from './../../constants.js';
 import { playSong } from '../../js';
 import './styles.css';
 
+const song_uri = 'spotify:track:48wH8bAxvBJO2l14GmNLz7';
+const baseURI = 'https://api.spotify.com/v1';
+const url = baseURI + '/me/player/pause';
+
 export const CreatePage = ({ values, setValues }) => {
-  const [token, setToken] = useState(values.token);
+  const token = values.token;
   const [name, setName] = useState('You');
   const [code, setCode] = useState(null);
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
   const [joined, setJoined] = useState(false);
+
   useEffect(() => {
     const checkPlayers = (code, remainingCalls = 50) => {
       const url = herokuURL + '/players?code=' + code;
@@ -21,6 +26,7 @@ export const CreatePage = ({ values, setValues }) => {
       })
         .then((response) => response.text())
         .then((users) => {
+          console.log('users is', users);
           if (remainingCalls > 0) {
             setTimeout(function () {
               checkPlayers(code, remainingCalls - 1);
@@ -37,7 +43,7 @@ export const CreatePage = ({ values, setValues }) => {
         })
         .catch((error) => {
           setCode('ERROR');
-          setError('cant check players in session');
+          setError('cant check players in session.');
         });
     };
 
@@ -68,61 +74,54 @@ export const CreatePage = ({ values, setValues }) => {
     }
   }, [token, code]);
 
-  const startRound = (code, song_uri, song_id, song_name, song_artist, user_name) => {
-    const url = herokuURL + '/startround';
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ code, song_uri, song_id, song_name, song_artist, user_name }),
-    })
-      .then((response) => response.text())
-      .then((res) => {
-        try {
-          let json = JSON.parse(res);
-          if (json.success) {
-            playSong(
-              token,
-              song_uri,
-              (error) => setError(error),
-              () => {
-                setValues({ code, name, token });
-                // alert('navigate to /play');
-                window.location.href = '/play';
-              }
-            );
-          }
-        } catch {
-          console.log('startround error response:', res);
-          setError('error on starting round');
-        }
-      })
-      .catch((error) => {
-        setError('please play and then pause a song on your spotify');
-        console.log('couldnt play first song:', error);
-      });
-  };
-
   const handleJoinResponse = (content) => {
-    let res;
+    setJoined(true);
     try {
-      res = JSON.parse(content);
+      JSON.parse(content);
     } catch {
       return setError(content.toLowerCase());
     }
 
-    startRound(
-      code,
-      'spotify:track:2cGxRwrMyEAp8dEbuZaVv6',
-      '2cGxRwrMyEAp8dEbuZaVv6',
-      'Instant Crush (feat. Julian Casablancas)',
-      name,
-      'Daft Punk'
-    );
+    checkPlaySong();
+  };
 
-    setJoined(true);
-    setToken(res.token); //id
+  const checkPlaySong = () => {
+    playSong(
+      token,
+      song_uri,
+      (error) => setError(error),
+      () => {
+        fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((content) => {
+            const status = content.status;
+            if (status === 403 || status === 404) {
+              setError('could not authenticate. please login with spotify again.');
+            }
+            if (status === 401 || status === 404) {
+              setError('no active spotify device found. play then pause any song on your device and retry.');
+            } else if (status === 204) {
+              setValues({
+                code,
+                name,
+                token,
+                isHost: true,
+              });
+              window.location.href = '/play';
+            }
+          })
+          .catch((error) => {
+            console.log('error on /playSong:', error);
+            setError('something went wrong. check console.');
+          });
+      }
+    );
   };
 
   const joinRoom = (code, name) => {
@@ -141,15 +140,7 @@ export const CreatePage = ({ values, setValues }) => {
   };
 
   const startSession = () => {
-    if (joined)
-      return startRound(
-        code,
-        'spotify:track:2cGxRwrMyEAp8dEbuZaVv6',
-        '2cGxRwrMyEAp8dEbuZaVv6',
-        'Instant Crush (feat. Julian Casablancas)',
-        name,
-        'Daft Punk'
-      );
+    if (joined) return checkPlaySong();
     if (code.length === 4 && name.length > 0 && name !== 'You') {
       joinRoom(code, name);
     } else {
@@ -193,7 +184,7 @@ export const CreatePage = ({ values, setValues }) => {
               {users.length >= 0 && (
                 <center>
                   <div style={{ marginBottom: '30px' }} />
-                  <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />
+                  {code && <Clickable text={'start session.'} filled color="white" onClick={() => startSession()} />}
                 </center>
               )}
               <div style={{ marginBottom: '10px' }} />

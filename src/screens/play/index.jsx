@@ -7,22 +7,18 @@ import { isMobile, isTall, herokuURL } from './../../constants.js';
 import './styles.css';
 
 export const PlayPage = ({ values }) => {
+  const { code, name, token, isHost = false } = values;
+
   const [value, setValue] = useState('');
   const [canSubmit, setCanSubmit] = useState(false);
   const [tracks, setTracks] = useState([]);
   const [selectedTrack, setSelectedTrack] = useState({});
-  const [message, setMessage] = useState('');
-  const [settingSong, setSettingSong] = useState(false);
+  const [message, setMessage] = useState(
+    isHost === 'true' ? 'you pick the first song that everyone will try to guess!' : ''
+  );
+  const [settingSong, setSettingSong] = useState(isHost === 'true');
   const [score, setScore] = useState(0);
-  const [submittedTrack, setSubmittedTrack] = useState('');
-
-  const { code, name, token } = values;
-
-  useEffect(() => {
-    if (!code || !name || !token) {
-      console.log('play screen values:', values);
-    }
-  }, [values, code, name, token]);
+  const [pickedSong, setPickedSong] = useState(null);
 
   const search = (query, token) => {
     if (query.length < 3) return setTracks([]);
@@ -54,12 +50,11 @@ export const PlayPage = ({ values }) => {
       body: JSON.stringify({ code, song_uri, song_id, song_name, song_artist, user_name }),
     })
       .then((response) => response.text())
-      .then((res) => {
-        console.log('res on startRound', res);
+      .then(() => {
         playSong(
           token,
           song_uri,
-          (error) => console.log('error in play', error),
+          (error) => setMessage('unexpected error:', error && error.toLowerCase()),
           (success) => console.log('success in play', success)
         );
       })
@@ -69,12 +64,14 @@ export const PlayPage = ({ values }) => {
   };
 
   const submit = () => {
-    if (selectedTrack.id === submittedTrack.id) {
-      setScore(score - 1);
-      setSettingSong(true);
+    if (!selectedTrack) return;
+    if (selectedTrack.id === pickedSong) {
+      setMessage('round reset, you pick again.');
+      return setSettingSong(true);
     }
 
     if (settingSong) {
+      setPickedSong(selectedTrack.id);
       setSettingSong(false);
       setValue('');
       setTracks([]);
@@ -84,7 +81,7 @@ export const PlayPage = ({ values }) => {
           ' by ' +
           selectedTrack.artists[0].name
       );
-      setSubmittedTrack(selectedTrack);
+
       return startRound(
         code,
         selectedTrack.uri,
@@ -105,7 +102,7 @@ export const PlayPage = ({ values }) => {
       .then((response) => response.text())
       .then((content) => JSON.parse(content))
       .then((json) => {
-        console.log('submit response json', json);
+        console.log('response json is', json);
         const { correct, someone_won, winner_name } = json;
 
         if (correct && correct === 'true') {
@@ -158,7 +155,7 @@ export const PlayPage = ({ values }) => {
             )}
             <div style={{ height: '15px' }} />
             <TextInput
-              placeholder={'enter song name'}
+              placeholder={'search songs'}
               value={value}
               style={{ width: isMobile ? '80vw' : '40vh' }}
               onChange={(value) => {

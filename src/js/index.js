@@ -18,7 +18,7 @@ export const playSong = (token, uri, errorFn = () => {}, successFn = () => {}) =
         errorFn('could not authenticate. please login with spotify again.');
       }
       if (status === 401 || status === 404) {
-        errorFn('could not play song. try playing and pausing a song on your spotify.');
+        errorFn('no active spotify device found. play then pause any song on your device and retry.');
       } else if (status === 204) {
         successFn();
       }

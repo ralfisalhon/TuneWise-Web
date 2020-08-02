@@ -14,15 +14,16 @@ export const App = () => {
     token: sessionStorage.getItem('token'),
     name: sessionStorage.getItem('name'),
     code: sessionStorage.getItem('code'),
+    isHost: sessionStorage.getItem('isHost'),
   });
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 
   const setNewVals = (newVals) => {
-    console.log('updating sessionStorage');
     sessionStorage.setItem('token', newVals.token);
     sessionStorage.setItem('name', newVals.name);
     sessionStorage.setItem('code', newVals.code);
+    sessionStorage.setItem('isHost', newVals.isHost);
     setValues(newVals);
   };
 
@@ -64,7 +65,6 @@ export const App = () => {
                 {window.location.pathname === '/' && (
                   <HomePage
                     setToken={(token) => {
-                      console.log('setting token to', token);
                       sessionStorage.setItem('token', token);
                       setValues((...prev) => ({ ...prev, token }));
                     }}
